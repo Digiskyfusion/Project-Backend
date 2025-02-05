@@ -13,105 +13,105 @@ app.use(cookieParser());
 
 const resetPasswordMail= async(name, email,token)=>
 {
-    // try {
-    //     const transporter=nodemailer.createTransport({
-    //         host: process.env.EMAIL_HOST,
-    //         // service:"gmail",
-    //         port:process.env.EMAIL_PORT,
-    //         secure:false,
-    //         // requireTLS:false,
-    //         auth:{
-    //             user:process.env.USER_EMAIL,
-    //             password:process.env.USER_PASSWORD,
-    //         }
-    //     })
-    //     // const transporter = nodemailer.createTransport({
-    //     //     service: 'gmail',
-    //     //     auth: {
-    //     //       user: process.env.USER_EMAIL,
-    //     //       pass: process.env.USER_PASSWORD,
-    //     //     }
-    //     //   });
+    try {
+        const transporter=nodemailer.createTransport({
+            host: process.env.EMAIL_HOST,
+            // service:"gmail",
+            port:process.env.EMAIL_PORT,
+            secure:false,
+            // requireTLS:false,
+            auth:{
+                user:process.env.USER_EMAIL,
+                password:process.env.USER_PASSWORD,
+            }
+        })
+        // const transporter = nodemailer.createTransport({
+        //     service: 'gmail',
+        //     auth: {
+        //       user: process.env.USER_EMAIL,
+        //       pass: process.env.USER_PASSWORD,
+        //     }
+        //   });
 
           
 
-    //     const mailOption = {
-    //         from: process.env.USER_EMAIL,
-    //         // from:"manishsharma6906@gmai.com",
-    //         to: email,
-    //         subject: "Reset Your Password",
-    //         html: `<p>Hi ${name},</p>
-    //                <p>Please click the link below to reset your password:</p>
-    //                <a href="http://localhost:3000/reset-password?tokens=${token}" target="_blank">Reset Password</a>
-    //                <p>If you did not request this, please ignore this email.</p>`
-    //     };
+        const mailOption = {
+            from: process.env.USER_EMAIL,
+            // from:"manishsharma6906@gmai.com",
+            to: email,
+            subject: "Reset Your Password",
+            html: `<p>Hi ${name},</p>
+                   <p>Please click the link below to reset your password:</p>
+                   <a href="http://localhost:3000/reset-password?tokens=${token}" target="_blank">Reset Password</a>
+                   <p>If you did not request this, please ignore this email.</p>`
+        };
         
-    //     try {
-    //         transporter.sendMail(mailOption,function(error,info){
-    //             // console.log(info);
+        try {
+            transporter.sendMail(mailOption,function(error,info){
+                // console.log(info);
                 
-    //             if(error){
-    //                 console.log(`erorr from mailoptions ${error}`);
+                if(error){
+                    console.log(`erorr from mailoptions ${error}`);
                     
-    //             }
-    //             else{
-    //                 console.log('Message sent: ', info.response);
-    //                 return res.status(200).json({ message: 'Email sent successfully!' });
-    //                 // console.log("mail hass been send",info.response);
+                }
+                else{
+                    console.log('Message sent: ', info.response);
+                    return res.status(200).json({ message: 'Email sent successfully!' });
+                    // console.log("mail hass been send",info.response);
                     
-    //             }
-    //         });
-    //     } catch (error) {
-    //         return res.status(400).send("error from inside nodemailer")
-    //     }
+                }
+            });
+        } catch (error) {
+            return res.status(400).send("error from inside nodemailer")
+        }
 
        
-    // } catch (error) {
-    //     return res.status(400).send("error from nodemailer")
-    // }
+    } catch (error) {
+        return res.status(400).send("error from nodemailer")
+    }
+    
+    // const transporter = nodemailer.createTransport({
+    //     host: process.env.EMAIL_HOST,
+    //     port: process.env.EMAIL_PORT,
+    //     secure: false, // true for 465, false for other ports
+    //     auth: {
+    //       user: process.env.EMAIL_USER,
+    //       pass: process.env.EMAIL_PASS,
+    //     },
+    //   });
+      
+    //   // Function to send an email
+    //   const sendEmail = async (to, subject, html) => {
+    //     try {
+    //       const mailOptions = {
+    //         from: `"Your App" <${process.env.EMAIL_USER}>`,
+    //         to,
+    //         subject,
+    //         html,
+    //       };
+      
+    //       const info = await transporter.sendMail(mailOptions);
+    //       console.log(`Email sent: ${info.messageId}`);
+    //       return true;
+    //     } catch (error) {
+    //       console.error("Email sending error:", error);
+    //       return false;
+    //     }
+    //   };
+      
+    //   // Send Welcome Email
+    //   const sendWelcomeEmail = async (email, name) => {
+    //     const html = `<h3>Welcome, ${name}!</h3><p>Thank you for signing up.</p>`;
+    //     return sendEmail(email, "Welcome to Our Platform!", html);
+    //   };
+      
+    //   // Send Password Reset Email
+    //   const sendPasswordResetEmail = async (email, resetToken) => {
+    //     const resetLink = `http://yourfrontend.com/reset-password?token=${resetToken}`;
+    //     const html = `<p>Click the link below to reset your password:</p><a href="${resetLink}">${resetLink}</a>`;
+    //     return sendEmail(email, "Reset Your Password", html);
+    //   };
 
-
-    const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port: process.env.EMAIL_PORT,
-        secure: false, // true for 465, false for other ports
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-      
-      // Function to send an email
-      const sendEmail = async (to, subject, html) => {
-        try {
-          const mailOptions = {
-            from: `"Your App" <${process.env.EMAIL_USER}>`,
-            to,
-            subject,
-            html,
-          };
-      
-          const info = await transporter.sendMail(mailOptions);
-          console.log(`Email sent: ${info.messageId}`);
-          return true;
-        } catch (error) {
-          console.error("Email sending error:", error);
-          return false;
-        }
-      };
-      
-      // Send Welcome Email
-      const sendWelcomeEmail = async (email, name) => {
-        const html = `<h3>Welcome, ${name}!</h3><p>Thank you for signing up.</p>`;
-        return sendEmail(email, "Welcome to Our Platform!", html);
-      };
-      
-      // Send Password Reset Email
-      const sendPasswordResetEmail = async (email, resetToken) => {
-        const resetLink = `http://yourfrontend.com/reset-password?token=${resetToken}`;
-        const html = `<p>Click the link below to reset your password:</p><a href="${resetLink}">${resetLink}</a>`;
-        return sendEmail(email, "Reset Your Password", html);
-      };
 }
 
 
@@ -124,7 +124,7 @@ const Home=(req, res)=>
             console.log(error);
             
         }
-    }
+    } 
 
 
     const signup= async (req, res)=>
