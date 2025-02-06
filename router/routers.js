@@ -3,12 +3,12 @@ const router= express.Router();
 const auth= require('../Controllers/AuthControllers');
 const { protect } = require("../Middleware/AuthMiddleware");
 const { loginLimiter } = require("../Middleware/RateLimitMiddleware");
-const { check } = require('express-validator');
 const { body, validationResult } = require('express-validator');
 
 
-router.route("/").get(auth.Home)
-// router.route("/signup",).post(auth.signup)
+
+
+// router.route("/signup",).post(auth.signup)sss
 router.route("/signup")
   .post(
     [
@@ -28,6 +28,8 @@ router.route("/signup")
 router.route("/login").post(loginLimiter,auth.login)
 router.route("/forget-password").post(auth.forgetPassword)
 router.route("/reset-password").post(protect,auth.resetPassword)
+router.route('/profile/:id').get(auth.getUserProfile); 
+// router.route('/profile/:id').put(protect, auth.updateUserProfile);
+router.route("/delete/:id").delete(protect, auth.deleteUser);
 
-
-module.exports= router
+module.exports= router;
