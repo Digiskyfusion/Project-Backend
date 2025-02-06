@@ -16,10 +16,8 @@ const resetPasswordMail= async(name, email,token)=>
     try {
         const transporter=nodemailer.createTransport({
             host: process.env.EMAIL_HOST,
-            // service:"gmail",
             port:process.env.EMAIL_PORT,
-            secure:false,
-            // requireTLS:false,
+            secure:true,
             auth:{
                 user:process.env.USER_EMAIL,
                 password:process.env.USER_PASSWORD,
@@ -37,7 +35,6 @@ const resetPasswordMail= async(name, email,token)=>
 
         const mailOption = {
             from: process.env.USER_EMAIL,
-            // from:"manishsharma6906@gmai.com",
             to: email,
             subject: "Reset Your Password",
             html: `<p>Hi ${name},</p>
@@ -73,7 +70,7 @@ const resetPasswordMail= async(name, email,token)=>
     // const transporter = nodemailer.createTransport({
     //     host: process.env.EMAIL_HOST,
     //     port: process.env.EMAIL_PORT,
-    //     secure: false, // true for 465, false for other ports
+    //     secure: false, 
     //     auth: {
     //       user: process.env.EMAIL_USER,
     //       pass: process.env.EMAIL_PASS,
@@ -116,17 +113,6 @@ const resetPasswordMail= async(name, email,token)=>
 
 
 
-const Home=(req, res)=>
-    {
-        try {
-           res.send("hello welcome to the home page");
-        } catch (error) {
-            console.log(error);
-            
-        }
-    } 
-
-
     const signup= async (req, res)=>
         {
             try {
@@ -147,7 +133,7 @@ const Home=(req, res)=>
                             roleType,
                             country
                         })
-                        let token = jwt.sign({ email }, process.env.SECRET_KEY);
+                        let token = jwt.sign({ email }, process.env.JWT_SECRET_KEY);
                         res.cookie("token", token)
                         // res.json(user)
                         res.status(201).send({ 
@@ -173,7 +159,7 @@ const Home=(req, res)=>
                 }
                 bcrypt.compare(password, user.password, function(err, result) {
                    if(result){
-                    let token= jwt.sign({email}, process.env.SECRET_KEY)
+                    let token= jwt.sign({email}, process.env.JWT_SECRET_KEY)
                     res.cookie("token", token)
                     // console.log(token);
                     res.status(200).send({
@@ -325,8 +311,102 @@ const Home=(req, res)=>
         };
         
 
+       
+        const getUserProfile = async (req, res) => {
+            const userId = req.params.id; // Extract user ID from URL parameter
+        
+            try {
+                // Fetch user details, excluding sensitive fields like 'password'
+                const user = await userModel.findById(userId).select('-password'); // Use your User model to find by ID
+                if (!user) {
+                    return res.status(404).json({ msg: 'User not found' });
+                }
+        
+                // Return the user data in the response
+                res.json(user);
+            } catch (error) {
+                console.error(error);
+                res.status(500).json({ msg: 'Server error' });
+            }
+        };
+        
 
-module.exports={Home,signup,login,forgetPassword,resetPassword}
+        // const updateUserProfile = async (req, res) => {
+        //     try {
+        //       const { id } = req.params;
+        //       const { name, country, roleType } = req.body;
+          
+        //       if (!req.user || req.user._id.toString() !== id) {
+        //         return res.status(403).json({ message: "Not authorized to update this profile" });
+        //     }
+          
+        //       // Find the user by ID
+        //       const user = await userModel.findById(id);
+        //       console.log(user);
+              
+        //       if (!user) {
+        //         return res.status(404).json({ message: "User not found" });
+        //       }
+          
+        //       // Update the user profile fields
+        //       user.name = name || user.name;
+        //       user.country = country || user.country;
+        //       user.roleType = roleType || user.roleType;
+          
+        //       // Save the updated user
+        //       const updatedUser = await user.save();
+          
+        //       // Return the updated user info
+        //       res.json({
+        //         message: "Profile updated successfully",
+        //         user: {
+        //           id: updatedUser._id,
+        //           name: updatedUser.name,
+        //           email: updatedUser.email,
+        //           country: updatedUser.country,
+        //           roleType: updatedUser.roleType,
+        //         },
+        //       });
+        //     } catch (error) {
+        //       res.status(500).json({ message: "Server error while updating profile", error: error.message });
+        //     }
+        //   };
+
+
+        const deleteUser = async (req, res) => {
+            try {
+              const userId = req.params.id;
+              const requesterId = req.user.id; // Extracted from JWT token
+              const requesterRole = req.user.role;
+          
+              console.log("User ID to delete:", userId);
+              console.log("Requester ID from token:", requesterId);
+              console.log("Requester Role:", requesterRole);
+          
+              // Check if the user exists
+              const user = await userModel.findById(userId);
+              if (!user) {
+                return res.status(404).json({ message: "User not found" });
+              }
+          
+              // Check if the requester is an admin or the same user
+              if (requesterRole !== "admin" && requesterId !== userId) {
+                return res.status(403).json({ message: "Permission denied" });
+              }
+          
+              // Delete the user
+              await user.remove();
+          
+              return res.status(200).json({ message: "User deleted successfully" });
+            } catch (error) {
+              console.error(error);
+              return res.status(500).json({ message: "Server error" });
+            }
+          };
+          
+
+
+module.exports={signup,login,forgetPassword,resetPassword,getUserProfile,deleteUser}
 
 
 

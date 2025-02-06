@@ -16,6 +16,7 @@ app.use(cors());  // Enable CORS
 app.use(helmet()); // Secure HTTP headers
 
 app.use("/api/auth",router)
+app.use("/api/user",router)
 
 mongooes().then(()=>
     {
