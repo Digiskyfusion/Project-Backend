@@ -314,6 +314,7 @@ const resetPasswordMail= async(name, email,token)=>
        
         const getUserProfile = async (req, res) => {
             const userId = req.params.id; // Extract user ID from URL parameter
+        // console.log(userId);
         
             try {
                 // Fetch user details, excluding sensitive fields like 'password'
@@ -331,82 +332,69 @@ const resetPasswordMail= async(name, email,token)=>
         };
         
 
-        // const updateUserProfile = async (req, res) => {
+        
+        const updateUserProfile = async (req, res) => {
+            try {
+            const { name, country, roleType } = req.body;
+            const userId = req.params.id;
+        
+            // Ensure the user can only update their own profile
+            if (req.user.id !== userId) {
+                return res.status(403).json({ message: 'You can only update your own profile' });
+            }
+        
+            const user = await User.findByIdAndUpdate(
+                userId,
+                { name, country, roleType },
+                { new: true, runValidators: true }
+            );
+        
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+        
+            res.status(200).json({ message: 'Profile updated successfully', user });
+            } catch (error) {
+            res.status(500).json({ message: 'Server error', error: error.message });
+            }
+        };
+        
+        
+
+        // const deleteUser = async (req, res) => {
         //     try {
-        //       const { id } = req.params;
-        //       const { name, country, roleType } = req.body;
+        //       const userId = req.params.id;
+        //       const requesterId = req.user.id; // Extracted from JWT token
+        //       const requesterRole = req.user.role;
           
-        //       if (!req.user || req.user._id.toString() !== id) {
-        //         return res.status(403).json({ message: "Not authorized to update this profile" });
-        //     }
+        //       console.log("User ID to delete:", userId);
+        //       console.log("Requester ID from token:", requesterId);
+        //       console.log("Requester Role:", requesterRole);
           
-        //       // Find the user by ID
-        //       const user = await userModel.findById(id);
-        //       console.log(user);
-              
+        //       // Check if the user exists
+        //       const user = await userModel.findById(userId);
         //       if (!user) {
         //         return res.status(404).json({ message: "User not found" });
         //       }
           
-        //       // Update the user profile fields
-        //       user.name = name || user.name;
-        //       user.country = country || user.country;
-        //       user.roleType = roleType || user.roleType;
+        //       // Check if the requester is an admin or the same user
+        //       if (requesterRole !== "admin" && requesterId !== userId) {
+        //         return res.status(403).json({ message: "Permission denied" });
+        //       }
           
-        //       // Save the updated user
-        //       const updatedUser = await user.save();
+        //       // Delete the user
+        //       await user.remove();
           
-        //       // Return the updated user info
-        //       res.json({
-        //         message: "Profile updated successfully",
-        //         user: {
-        //           id: updatedUser._id,
-        //           name: updatedUser.name,
-        //           email: updatedUser.email,
-        //           country: updatedUser.country,
-        //           roleType: updatedUser.roleType,
-        //         },
-        //       });
+        //       return res.status(200).json({ message: "User deleted successfully" });
         //     } catch (error) {
-        //       res.status(500).json({ message: "Server error while updating profile", error: error.message });
+        //       console.error(error);
+        //       return res.status(500).json({ message: "Server error" });
         //     }
         //   };
-
-
-        const deleteUser = async (req, res) => {
-            try {
-              const userId = req.params.id;
-              const requesterId = req.user.id; // Extracted from JWT token
-              const requesterRole = req.user.role;
-          
-              console.log("User ID to delete:", userId);
-              console.log("Requester ID from token:", requesterId);
-              console.log("Requester Role:", requesterRole);
-          
-              // Check if the user exists
-              const user = await userModel.findById(userId);
-              if (!user) {
-                return res.status(404).json({ message: "User not found" });
-              }
-          
-              // Check if the requester is an admin or the same user
-              if (requesterRole !== "admin" && requesterId !== userId) {
-                return res.status(403).json({ message: "Permission denied" });
-              }
-          
-              // Delete the user
-              await user.remove();
-          
-              return res.status(200).json({ message: "User deleted successfully" });
-            } catch (error) {
-              console.error(error);
-              return res.status(500).json({ message: "Server error" });
-            }
-          };
           
 
 
-module.exports={signup,login,forgetPassword,resetPassword,getUserProfile,deleteUser}
+module.exports={signup,login,forgetPassword,resetPassword,getUserProfile,updateUserProfile}
 
 
 

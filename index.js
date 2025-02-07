@@ -17,6 +17,8 @@ app.use(helmet()); // Secure HTTP headers
 
 app.use("/api/auth",router)
 app.use("/api/user",router)
+app.use("/api/chat",router)
+app.use("/api/plan",router)
 
 mongooes().then(()=>
     {
