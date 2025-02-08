@@ -13,6 +13,7 @@ const UserSchema = new mongoose.Schema({
     type:String,
     default:""
   },
+  credits: { type: Number, default: 0 },
   tokenExpiresAt:{ Date}
 },{timestamps:true});
 UserSchema.index({ tokenExpiresAt: 1 }, { expireAfterSeconds: 0 });

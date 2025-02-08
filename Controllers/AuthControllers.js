@@ -3,11 +3,12 @@ const app = express();
 const bcrypt= require("bcrypt");
 const jwt= require("jsonwebtoken")
 const userModel= require("../Model/user");
+const chatModel= require("../Model/chat")
 const cookieParser = require("cookie-parser");
 const nodemailer= require("nodemailer")
 const randomstring   = require("randomstring");
-
-
+const User = require("../Model/user")
+const planModel= require("../Model/Plan")
 
 app.use(cookieParser());
 
@@ -150,93 +151,46 @@ const resetPasswordMail= async(name, email,token)=>
         }
 
 
-        const login=async (req,res)=>{
+        const login = async (req, res) => {
             try {
-                let {email, password}= req.body
-                let user= await userModel.findOne({email});
-                if(!user){
-                    return res.status(200).send("invalied user from login")
+                const { email, password } = req.body;
+        
+                // Check if user exists
+                const user = await userModel.findOne({ email });
+                if (!user) {
+                    return res.status(400).json({ success: false, message: "Invalid user" });
                 }
-                bcrypt.compare(password, user.password, function(err, result) {
-                   if(result){
-                    let token= jwt.sign({email}, process.env.JWT_SECRET_KEY)
-                    res.cookie("token", token)
-                    // console.log(token);
-                    res.status(200).send({
-                        success:true,
-                        message:"successfully login",
-                        user:{
-                            name:user.name,
-                            email:user.email,
-                        },
-                        token
-                       })
-                   }
-                   else{
-                    res.status(200).send({
-                        success:true,
-                        message:"invaild data",})
-                   }
+        
+                // Compare passwords
+                const isMatch = await bcrypt.compare(password, user.password);
+                if (!isMatch) {
+                    return res.status(400).json({ success: false, message: "Invalid credentials" });
+                }
+        
+                // Generate JWT token
+                const token = jwt.sign({ email }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
+        
+                // Set cookie with security flags
+                res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
+        
+                // Success response
+                return res.status(200).json({
+                    success: true,
+                    message: "Successfully logged in",
+                    user: {
+                        name: user.name,
+                        email: user.email,
+                    },
+                    token,
                 });
-                
+        
             } catch (error) {
-              return res.status(500).send("error from login") 
+                console.error("Login Error:", error);
+                return res.status(500).json({ success: false, message: "Internal Server Error" });
             }
-        }
+        };
 
-
-        // const forgetPassword= async (req, res)=>
-        // {
-        //     try {
-        //         let {email}= req.body;
-        //         let user= await userModel.findOne({email});
-        //         if(user){
-        //             let randomString= randomstring.generate();
-        //             await  userModel.updateOne({email},{$set:{token:randomString}});
-        //            resetPasswordMail(user.name, user.email,randomString)
-        //            return res.status(200).json({success:true,
-        //             message:"please check you email inbox and forget your password"});
-        //         }else{
-        //             return res.status(404).json({
-        //                 sucess:false,
-        //                 message:"this email is not exist"})
-        //         }
-                
-        //     } catch (error) {
-        //         return res.status(500).send("error from forgetpassword")
-        //     }
-        // }
-
-
-        // const resetPassword= async (req,res)=>
-        // {
-        //     try {
-        //         let token= req.query.token;
-        //        let tokenData= user.findOne({token})
-        //         if(tokenData){
-        //             const password= req.body.password
-        //          let newpassword=   bcrypt.genSalt(10, function(err, salt) {
-        //                 bcrypt.hash(password, salt,async function(err, hash) {
-        //                     let user= await userModel.create({
-        //                         password:hash,
-        //                     })
-        //                     res.status(201).send({ 
-        //                         success: true,
-        //                         message:"user register successfuly from backend reg",
-        //                         user,
-        //                         token
-        //                     })
-        //                 });
-        //             });
-        //           let userData=  userModel.findByIdAndUpdate({_id:tokenData._id},{$set:{password:newpassword,token:""}},{new :true})
-        //           res.status(404).send({sucess:true, message:"user password has been reset", data:userData})
-        //         }else{
-        //           return  res.status(404).send({sucess:true, message:"the link is expire"})
-        //         }
-        //     } catch (error) {
-        //      return res.status(404).send("error from reset password")   
-        //     }
-        // }
+       
 
         const forgetPassword = async (req, res) => {
             try {
@@ -332,69 +286,163 @@ const resetPasswordMail= async(name, email,token)=>
         };
         
 
-        
-        const updateUserProfile = async (req, res) => {
+     const updateUserProfile = async (req, res) => {
+        console.log("caleled")
             try {
-            const { name, country, roleType } = req.body;
-            const userId = req.params.id;
-        
-            // Ensure the user can only update their own profile
-            if (req.user.id !== userId) {
-                return res.status(403).json({ message: 'You can only update your own profile' });
-            }
-        
-            const user = await User.findByIdAndUpdate(
-                userId,
-                { name, country, roleType },
-                { new: true, runValidators: true }
-            );
-        
-            if (!user) {
-                return res.status(404).json({ message: 'User not found' });
-            }
-        
-            res.status(200).json({ message: 'Profile updated successfully', user });
+                // console.log(req.user)
+                // console.log(req.params)
+              if (req.user.id !== req.params.id) {
+                return res.status(403).json({ message: "Unauthorized action" });
+              }
+              const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true }).select("-password");
+              res.json(updatedUser);
             } catch (error) {
-            res.status(500).json({ message: 'Server error', error: error.message });
+              res.status(500).json({ message: ("hello",error.message )});
             }
-        };
+          };
+
+         const deleteUser = async (req, res) => {
+            try {
+              if (req.user.roleType !== "admin" && req.user.id === req.params.id) {
+                return res.status(403).json({ message: "Unauthorized action" });
+              }
+              await User.findByIdAndDelete(req.params.id);
+              res.json({ message: "User deleted successfully" });
+            } catch (error) {
+              res.status(500).json({ message: error.message });
+            }
+          };
         
-        
-
-        // const deleteUser = async (req, res) => {
-        //     try {
-        //       const userId = req.params.id;
-        //       const requesterId = req.user.id; // Extracted from JWT token
-        //       const requesterRole = req.user.role;
-          
-        //       console.log("User ID to delete:", userId);
-        //       console.log("Requester ID from token:", requesterId);
-        //       console.log("Requester Role:", requesterRole);
-          
-        //       // Check if the user exists
-        //       const user = await userModel.findById(userId);
-        //       if (!user) {
-        //         return res.status(404).json({ message: "User not found" });
-        //       }
-          
-        //       // Check if the requester is an admin or the same user
-        //       if (requesterRole !== "admin" && requesterId !== userId) {
-        //         return res.status(403).json({ message: "Permission denied" });
-        //       }
-          
-        //       // Delete the user
-        //       await user.remove();
-          
-        //       return res.status(200).json({ message: "User deleted successfully" });
-        //     } catch (error) {
-        //       console.error(error);
-        //       return res.status(500).json({ message: "Server error" });
-        //     }
-        //   };
-          
 
 
-module.exports={signup,login,forgetPassword,resetPassword,getUserProfile,updateUserProfile}
+          const sendMessage = async (req, res) => {
+            try {
+              const { receiver, message, roleType } = req.body;
+              const sender = req.user;
+              console.log(message);
+              
+          
+              if (!receiver || !message) {
+                return res.status(400).json({ message: "Receiver and message are required" });
+              }
+          
+              // Check if sender is a freelancer and has enough credits
+              if (sender.roleType == "freelancer") {
+                if (sender.credits < 1) {
+                  return res.status(403).json({ message: "Insufficient credits" });
+                }
+                sender.credits -= 1; // Deduct one credit per message
+                await sender.save();
+              }
+          
+              // Save chat message
+              const chatMessage = new chatModel({
+                sender: sender._id,
+                receiver: receiver,
+                message,
+                roleType 
+              });
+              
+          
+              await chatMessage.save();
+          
+              res.status(201).json({ message: "Message sent successfully", chat: chatMessage });
+            } catch (error) {
+              res.status(500).json({ message: "Server error", error:error.message });
+            }
+          };
+          
+
+          const chatHistoryAPI= async (req, res) => {
+            try {
+              const userId = req.params.userId;
+              const loggedInUserId = req.user.id; // Assuming JWT or session authentication to get the logged-in user ID
+          
+              // Validate if the logged-in user is requesting their chat history
+              if (!userId || userId !== loggedInUserId) {
+                return res.status(403).json({ message: 'You can only access your own chat history.' });
+              }
+          
+              // Fetch chat history between the logged-in user and the other user
+              const chatHistory = await chatModel.find({
+                $or: [
+                  { senderId: loggedInUserId, receiverId: userId },
+                  { senderId: userId, receiverId: loggedInUserId }
+                ]
+              }).sort({ createdAt: 1 }); // Sort by date (ascending)
+          
+              if (!chatHistory) {
+                return res.status(404).json({ message: 'No chat history found.' });
+              }
+          
+              // Return the chat history
+              return res.status(200).json({ chatHistory });
+          
+            } catch (error) {
+              console.error('Error fetching chat history:', error);
+              return res.status(500).json({ message: 'Internal server error.' });
+            }
+          };
+          
+
+        const createSubscription = async (req, res) => {
+            const { name, description, price, duration, features } = req.body;
+          
+            // Validate the input
+            if (!name || !description || !price || !duration || !features) {
+              return res.status(400).json({ message: 'All fields are required' });
+            }
+          
+            // Ensure features is an array
+            if (!Array.isArray(features)) {
+              return res.status(400).json({ message: 'Features must be an array' });
+            }
+          
+            try {
+              const newPlan = new planModel({
+                name,
+                description,
+                price,
+                duration,
+                features,
+              });
+          
+              // Log to debug the plan object
+            //   console.log('New Plan:', newPlan);
+          
+              // Save the new plan to the database
+              await newPlan.save();
+          
+              return res.status(201).json({ message: 'Subscription plan created successfully', plan: newPlan });
+            } catch (error) {
+              console.error('Error creating subscription plan:', error);
+              return res.status(500).json({ message: 'Internal server error', error: error.message });
+            }
+          };
+          
+          const AllSubscription= async (req, res) => {
+            try {
+              const plans = await planModel.find(); // Find all subscription plans
+              return res.status(200).json({ plans });  // Return all the plans as JSON
+            } catch (error) {
+              console.error('Error fetching subscription plans:', error);
+              return res.status(500).json({ message: 'Internal server error' });
+            }
+          };
+
+
+module.exports={signup,
+    login,
+    forgetPassword,
+    resetPassword,
+    getUserProfile,
+    updateUserProfile,
+    deleteUser,
+    sendMessage,
+    chatHistoryAPI,
+    createSubscription,
+    AllSubscription
+}
 
 
 
