@@ -33,12 +33,15 @@ const User = require('../Model/user');
 const protect = async (req, res, next) => {
     try {
         const token = req.header('Authorization')?.replace('Bearer ', '');
+        // console.log(token)
         if (!token) return res.status(401).json({ message: 'No token, authorization denied' });
         
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-        console.log(decoded);
+        // console.log("decoded",decoded);
+
+        const email= decoded.email
         
-        const user = await User.findOne(decoded.id);
+        const user = await User.findOne({email});
         // console.log(user);
         
         if (!user) {
