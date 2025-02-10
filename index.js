@@ -65,7 +65,7 @@ io.on('connection', (socket) => {
       await newMessage.save();
   
       // Emit the message to the receiver's room (real-time update)
-      io.to(receiverId).emit('receiveMessage', {
+      io.to(receiver).emit('receiveMessage', {
         sender,
         receiver,
         message,

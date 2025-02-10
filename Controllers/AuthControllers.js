@@ -386,25 +386,20 @@ const resetPasswordMail= async(name, email,token)=>
           
 
         const createSubscription = async (req, res) => {
-            const { name, description, price, duration, features } = req.body;
+            const { name, credit, amount } = req.body;
           
             // Validate the input
-            if (!name || !description || !price || !duration || !features) {
+            if (!name || !amount || !credit) {
               return res.status(400).json({ message: 'All fields are required' });
             }
           
-            // Ensure features is an array
-            if (!Array.isArray(features)) {
-              return res.status(400).json({ message: 'Features must be an array' });
-            }
+            
           
             try {
               const newPlan = new planModel({
                 name,
-                description,
-                price,
-                duration,
-                features,
+                amount,
+                credit,
               });
           
               // Log to debug the plan object
