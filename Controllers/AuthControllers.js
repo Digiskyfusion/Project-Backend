@@ -9,112 +9,113 @@ const nodemailer= require("nodemailer")
 const randomstring   = require("randomstring");
 const User = require("../Model/user")
 const planModel= require("../Model/Plan")
-
+const Category= require ("../Model/category")
+const SubCategory = require("../Model/subCategory")
 app.use(cookieParser());
 
-const resetPasswordMail= async(name, email,token)=>
-{
-    try {
-        const transporter=nodemailer.createTransport({
-            host: process.env.EMAIL_HOST,
-            port:process.env.EMAIL_PORT,
-            secure:true,
-            auth:{
-                user:process.env.USER_EMAIL,
-                password:process.env.USER_PASSWORD,
-            }
-        })
-        // const transporter = nodemailer.createTransport({
-        //     service: 'gmail',
-        //     auth: {
-        //       user: process.env.USER_EMAIL,
-        //       pass: process.env.USER_PASSWORD,
-        //     }
-        //   });
+       const resetPasswordMail= async(name, email,token)=>
+      {
+          try {
+              const transporter=nodemailer.createTransport({
+                  host: process.env.EMAIL_HOST,
+                  port:process.env.EMAIL_PORT,
+                  secure:true,
+                  auth:{
+                      user:process.env.USER_EMAIL,
+                      password:process.env.USER_PASSWORD,
+                  }
+              })
+              // const transporter = nodemailer.createTransport({
+              //     service: 'gmail',
+              //     auth: {
+              //       user: process.env.USER_EMAIL,
+              //       pass: process.env.USER_PASSWORD,
+              //     }
+              //   });
 
-          
-
-        const mailOption = {
-            from: process.env.USER_EMAIL,
-            to: email,
-            subject: "Reset Your Password",
-            html: `<p>Hi ${name},</p>
-                   <p>Please click the link below to reset your password:</p>
-                   <a href="http://localhost:3000/reset-password?tokens=${token}" target="_blank">Reset Password</a>
-                   <p>If you did not request this, please ignore this email.</p>`
-        };
-        
-        try {
-            transporter.sendMail(mailOption,function(error,info){
-                // console.log(info);
                 
-                if(error){
-                    console.log(`erorr from mailoptions ${error}`);
-                    
-                }
-                else{
-                    console.log('Message sent: ', info.response);
-                    return res.status(200).json({ message: 'Email sent successfully!' });
-                    // console.log("mail hass been send",info.response);
-                    
-                }
-            });
-        } catch (error) {
-            return res.status(400).send("error from inside nodemailer")
-        }
 
-       
-    } catch (error) {
-        return res.status(400).send("error from nodemailer")
-    }
-    
-    // const transporter = nodemailer.createTransport({
-    //     host: process.env.EMAIL_HOST,
-    //     port: process.env.EMAIL_PORT,
-    //     secure: false, 
-    //     auth: {
-    //       user: process.env.EMAIL_USER,
-    //       pass: process.env.EMAIL_PASS,
-    //     },
-    //   });
-      
-    //   // Function to send an email
-    //   const sendEmail = async (to, subject, html) => {
-    //     try {
-    //       const mailOptions = {
-    //         from: `"Your App" <${process.env.EMAIL_USER}>`,
-    //         to,
-    //         subject,
-    //         html,
-    //       };
-      
-    //       const info = await transporter.sendMail(mailOptions);
-    //       console.log(`Email sent: ${info.messageId}`);
-    //       return true;
-    //     } catch (error) {
-    //       console.error("Email sending error:", error);
-    //       return false;
-    //     }
-    //   };
-      
-    //   // Send Welcome Email
-    //   const sendWelcomeEmail = async (email, name) => {
-    //     const html = `<h3>Welcome, ${name}!</h3><p>Thank you for signing up.</p>`;
-    //     return sendEmail(email, "Welcome to Our Platform!", html);
-    //   };
-      
-    //   // Send Password Reset Email
-    //   const sendPasswordResetEmail = async (email, resetToken) => {
-    //     const resetLink = `http://yourfrontend.com/reset-password?token=${resetToken}`;
-    //     const html = `<p>Click the link below to reset your password:</p><a href="${resetLink}">${resetLink}</a>`;
-    //     return sendEmail(email, "Reset Your Password", html);
-    //   };
+              const mailOption = {
+                  from: process.env.USER_EMAIL,
+                  to: email,
+                  subject: "Reset Your Password",
+                  html: `<p>Hi ${name},</p>
+                        <p>Please click the link below to reset your password:</p>
+                        <a href="http://localhost:3000/reset-password?tokens=${token}" target="_blank">Reset Password</a>
+                        <p>If you did not request this, please ignore this email.</p>`
+              };
+              
+              try {
+                  transporter.sendMail(mailOption,function(error,info){
+                      // console.log(info);
+                      
+                      if(error){
+                          console.log(`erorr from mailoptions ${error}`);
+                          
+                      }
+                      else{
+                          console.log('Message sent: ', info.response);
+                          return res.status(200).json({ message: 'Email sent successfully!' });
+                          // console.log("mail hass been send",info.response);
+                          
+                      }
+                  });
+              } catch (error) {
+                  return res.status(400).send("error from inside nodemailer")
+              }
 
-}
+            
+          } catch (error) {
+              return res.status(400).send("error from nodemailer")
+          }
+          
+          // const transporter = nodemailer.createTransport({
+          //     host: process.env.EMAIL_HOST,
+          //     port: process.env.EMAIL_PORT,
+          //     secure: false, 
+          //     auth: {
+          //       user: process.env.EMAIL_USER,
+          //       pass: process.env.EMAIL_PASS,
+          //     },
+          //   });
+            
+          //   // Function to send an email
+          //   const sendEmail = async (to, subject, html) => {
+          //     try {
+          //       const mailOptions = {
+          //         from: `"Your App" <${process.env.EMAIL_USER}>`,
+          //         to,
+          //         subject,
+          //         html,
+          //       };
+            
+          //       const info = await transporter.sendMail(mailOptions);
+          //       console.log(`Email sent: ${info.messageId}`);
+          //       return true;
+          //     } catch (error) {
+          //       console.error("Email sending error:", error);
+          //       return false;
+          //     }
+          //   };
+            
+          //   // Send Welcome Email
+          //   const sendWelcomeEmail = async (email, name) => {
+          //     const html = `<h3>Welcome, ${name}!</h3><p>Thank you for signing up.</p>`;
+          //     return sendEmail(email, "Welcome to Our Platform!", html);
+          //   };
+            
+          //   // Send Password Reset Email
+          //   const sendPasswordResetEmail = async (email, resetToken) => {
+          //     const resetLink = `http://yourfrontend.com/reset-password?token=${resetToken}`;
+          //     const html = `<p>Click the link below to reset your password:</p><a href="${resetLink}">${resetLink}</a>`;
+          //     return sendEmail(email, "Reset Your Password", html);
+          //   };
+
+      }
 
 
 
-    const signup= async (req, res)=>
+        const signup= async (req, res)=>
         {
             try {
                 let {name, email,password, roleType,country}= req.body;
@@ -286,7 +287,7 @@ const resetPasswordMail= async(name, email,token)=>
         };
         
 
-     const updateUserProfile = async (req, res) => {
+         const updateUserProfile = async (req, res) => {
         console.log("caleled")
             try {
                 // console.log(req.user)
@@ -385,7 +386,7 @@ const resetPasswordMail= async(name, email,token)=>
           };
           
 
-        const createSubscription = async (req, res) => {
+          const createSubscription = async (req, res) => {
             const { name, credit, amount } = req.body;
           
             // Validate the input
@@ -402,10 +403,7 @@ const resetPasswordMail= async(name, email,token)=>
                 credit,
               });
           
-              // Log to debug the plan object
-            //   console.log('New Plan:', newPlan);
-          
-              // Save the new plan to the database
+            
               await newPlan.save();
           
               return res.status(201).json({ message: 'Subscription plan created successfully', plan: newPlan });
@@ -426,7 +424,37 @@ const resetPasswordMail= async(name, email,token)=>
           };
 
 
-module.exports={signup,
+
+
+          // category and subcategory routes
+
+      const category = async (req, res) => {
+        try {
+          const { name } = req.body;
+          const category = new Category({ name });
+          await category.save();
+          res.status(201).json({ message: "Category created", category });
+        } catch (error) {
+          res.status(500).json({meaaage: "not found usre", error: error.message });
+        }
+      };
+      
+
+      // subCategory
+      const subCategory= async (req, res) => {
+        try {
+          const { category_id, name } = req.body;
+          const subcategory = new SubCategory({ category_id, name });
+          await subcategory.save();
+          res.status(201).json({ message: "Subcategory created", subcategory });
+        } catch (error) {
+          res.status(500).json({meaaage: "not found usre", error: error.message });
+        }
+      }
+
+
+module.exports={
+    signup,
     login,
     forgetPassword,
     resetPassword,
@@ -436,7 +464,9 @@ module.exports={signup,
     sendMessage,
     chatHistoryAPI,
     createSubscription,
-    AllSubscription
+    AllSubscription,
+    category,
+    subCategory,
 }
 
 

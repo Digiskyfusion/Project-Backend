@@ -39,6 +39,8 @@ router.route("/create").post(protect,auth.createSubscription);
 router.route("/all").get(protect,auth.AllSubscription);
 
 
-
+// category and subcategory
+router.route("/category").post(protect, auth.category)
+router.route("/subcategory").post(protect, auth.subCategory)
 
 module.exports= router;
