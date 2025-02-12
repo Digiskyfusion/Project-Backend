@@ -29,6 +29,7 @@ app.use("/api/auth",router)
 app.use("/api/user",router)
 app.use("/api/chat",router)
 app.use("/api/plan",router)
+app.use("/api/category",router)
 
 
 // io.on("connection", (socket) => {
