@@ -40,7 +40,18 @@ router.route("/all").get(protect,auth.AllSubscription);
 
 
 // category and subcategory
-router.route("/category").post(protect, auth.category)
-router.route("/subcategory").post(protect, auth.subCategory)
+router.route("/createCategory").post(protect, auth.createCategory)
+router.route("/getallCategory").get(protect, auth.getCategories)
+router.route("/singlecategory/:id").get(protect, auth.getCategoryById)
+router.route("/updateCategory/:id").put(protect, auth.updateCategory)
+router.route("/deleteCategory/:id").delete(protect, auth.deleteCategory)
+
+
+// subcategory
+router.route("/subCategory").post(protect, auth.createSubCategory)
+router.route("/getallsubCategory").get(protect, auth.getSubCategories)
+router.route("/singlesubCategory/:id").get(protect, auth.getSubCategoryById)
+router.route("/updatesubCategory/:id").put(protect, auth.updateSubCategory)
+router.route("/deletesubCategory/:id").delete(protect, auth.deleteSubCategory)
 
 module.exports= router;
