@@ -23,9 +23,9 @@ router.route("/signup")
     },
     auth.signup
   );
-router.route("/login").post(loginLimiter,auth.login)
-router.route("/forget-password").post(auth.forgetPassword)
-router.route("/reset-password").post(protect,auth.resetPassword)
+router.route("/login").post(loginLimiter,auth.login);
+router.route("/forget-password").post(auth.forgetPassword);
+router.route("/reset-password").post(protect,auth.resetPassword);
 router.route('/profile/:id').get(auth.getUserProfile); 
 router.route('/profile/:id').put(protect, auth.updateUserProfile);
 router.route("/delete/:id").delete(protect, auth.deleteUser);
@@ -40,18 +40,18 @@ router.route("/all").get(protect,auth.AllSubscription);
 
 
 // category and subcategory
-router.route("/createCategory").post(protect, auth.createCategory)
-router.route("/getallCategory").get(protect, auth.getCategories)
-router.route("/singlecategory/:id").get(protect, auth.getCategoryById)
-router.route("/updateCategory/:id").put(protect, auth.updateCategory)
-router.route("/deleteCategory/:id").delete(protect, auth.deleteCategory)
+router.route("/createCategory").post(protect, auth.createCategory);
+router.route("/getallCategory").get(protect, auth.getCategories);
+router.route("/singlecategory/:id").get(protect, auth.getCategoryById);
+router.route("/updateCategory/:id").put(protect, auth.updateCategory);
+router.route("/deleteCategory/:id").delete(protect, auth.deleteCategory);
 
 
 // subcategory
-router.route("/subCategory").post(protect, auth.createSubCategory)
-router.route("/getallsubCategory").get(protect, auth.getSubCategories)
-router.route("/singlesubCategory/:id").get(protect, auth.getSubCategoryById)
-router.route("/updatesubCategory/:id").put(protect, auth.updateSubCategory)
-router.route("/deletesubCategory/:id").delete(protect, auth.deleteSubCategory)
+router.route("/subCategory").post(protect, auth.createSubCategory);
+router.route("/getallsubCategory").get(protect, auth.getSubCategories);
+router.route("/singlesubCategory/:id").get(protect, auth.getSubCategoryById);
+router.route("/updatesubCategory/:id").put(protect, auth.updateSubCategory);
+router.route("/deletesubCategory/:id").delete(protect, auth.deleteSubCategory);
 
 module.exports= router;
