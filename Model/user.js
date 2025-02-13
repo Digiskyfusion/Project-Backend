@@ -17,4 +17,4 @@ const UserSchema = new mongoose.Schema({
   tokenExpiresAt:{ Date}
 },{timestamps:true});
 UserSchema.index({ tokenExpiresAt: 1 }, { expireAfterSeconds: 0 });
-module.exports=mongoose.model("user", UserSchema)
+module.exports=mongoose.model("user", UserSchema);
