@@ -54,4 +54,11 @@ router.route("/singlesubCategory/:id").get(protect, auth.getSubCategoryById);
 router.route("/updatesubCategory/:id").put(protect, auth.updateSubCategory);
 router.route("/deletesubCategory/:id").delete(protect, auth.deleteSubCategory);
 
+// freelancer profile
+router.route("/createfreelancer").post(protect, auth.createFreelancer);
+router.route("/getallfreelancers").get(protect, auth.getallfreelancer);
+router.route("/freelancers/:id").get(protect, auth.getSingleFreelancer);
+router.route("/updatefreelancers/:id").put(protect, auth.updatefreelancer);
+router.route("/deletefreelancers/:id").delete(protect, auth.deleteFreelancer);
+
 module.exports= router;

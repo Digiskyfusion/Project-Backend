@@ -11,6 +11,8 @@ const User = require("../Model/user")
 const planModel= require("../Model/Plan")
 const Category= require ("../Model/category")
 const SubCategory = require("../Model/subCategory")
+const freelancerSchema= require("../Model/freelancer")
+
 app.use(cookieParser());
 
        const resetPasswordMail= async(name, email,token)=>
@@ -566,6 +568,65 @@ app.use(cookieParser());
             }
           };
 
+
+
+
+          // freelancer profile
+          const createFreelancer =  async (req, res) => {
+            try {
+              const freelancer = new freelancerSchema(req.body);
+              await freelancer.save();
+              res.status(201).json({ success: true, data: freelancer });
+            } catch (error) {
+              res.status(400).json({ success: false, error: error.message , message :"hey" });
+            }
+          };
+
+          // get all freelancer
+          const getallfreelancer= async (req, res) => {
+            try {
+              const freelancers = await freelancerSchema.find();
+              res.status(200).json({ success: true, data: freelancers });
+            } catch (error) {
+              res.status(500).json({ success: false, error: error.message });
+            }
+          }
+
+          // get single freelancer by id 
+          const getSingleFreelancer=  async (req, res) => {
+            try {
+              const freelancer = await freelancerSchema.findById(req.params.id);
+              if (!freelancer) return res.status(404).json({ success: false, message: "Freelancer not found" });
+              res.status(200).json({ success: true, data: freelancer });
+            } catch (error) {
+              res.status(500).json({ success: false, error: error.message });
+            }
+          }
+
+
+          // update freelancer by id
+          const updatefreelancer= async (req, res) => {
+            try {
+              const freelancer = await freelancerSchema.findByIdAndUpdate(req.params.id, req.body, { new: true });
+              if (!freelancer) return res.status(404).json({ success: false, message: "Freelancer not found" });
+              res.status(200).json({ success: true, data: freelancer });
+            } catch (error) {
+              res.status(400).json({ success: false, error: error.message });
+            }
+          }
+
+          // delete freelancer by id
+          const deleteFreelancer =  async (req, res) => {
+            try {
+              const freelancer = await freelancerSchema.findByIdAndDelete(req.params.id);
+              if (!freelancer) return res.status(404).json({ success: false, message: "Freelancer not found" });
+              res.status(200).json({ success: true, message: "Freelancer deleted successfully" });
+            } catch (error) {
+              res.status(500).json({ success: false, error: error.message });
+            }
+          }
+
+
 module.exports={
     signup,
     login,
@@ -587,7 +648,12 @@ module.exports={
     getSubCategories,
     getSubCategoryById,
     updateSubCategory,
-    deleteSubCategory
+    deleteSubCategory,
+    createFreelancer,
+    getallfreelancer,
+    getSingleFreelancer,
+    updatefreelancer,
+    deleteFreelancer
 }
 
 
