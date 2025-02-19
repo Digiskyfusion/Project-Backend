@@ -61,4 +61,13 @@ router.route("/freelancers/:id").get(protect, auth.getSingleFreelancer);
 router.route("/updatefreelancers/:id").put(protect, auth.updatefreelancer);
 router.route("/deletefreelancers/:id").delete(protect, auth.deleteFreelancer);
 
+
+// client route
+router.route("/createclient").post(protect, auth.createClient);
+router.route("/getallclient").get(protect, auth.getAllClient);
+router.route("/getsingleclient/:id").get(protect, auth.getSingleClinet);
+router.route("/updateclient/:id").put(protect, auth.updateClinet);
+router.route("/deleteclient/:id").delete(protect, auth.deleteClient);
+
+
 module.exports= router;

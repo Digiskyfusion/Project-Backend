@@ -31,6 +31,7 @@ app.use("/api/chat",router)
 app.use("/api/plan",router)
 app.use("/api/category",router)
 app.use("/api/freelancer",router)
+app.use("/api/client",router)
 
 
 // io.on("connection", (socket) => {
