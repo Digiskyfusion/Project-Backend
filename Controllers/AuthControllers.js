@@ -123,11 +123,9 @@ app.use(cookieParser());
                 let {name, email,password, roleType,country,mobileNumber}= req.body;
         
                 let userFind= await userModel.findOne({email});
-        
                 if(userFind){
                     return res.status(200).send('user Already Exist from');
                 }
-        
                 bcrypt.genSalt(10, function(err, salt) {
                     bcrypt.hash(password, salt,async function(err, hash) {
                         let user= await userModel.create({
