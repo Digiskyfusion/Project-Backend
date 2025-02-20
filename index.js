@@ -14,15 +14,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const server = http.createServer(app);
 
-const io = new Server(server, {
+const corsOption = new Server(server, {
     cors: {
-      origin: "*", // Change this to your frontend URL in production
-      methods: ["GET", "POST"],
+      origin: "localhost:5173", // Change this to your frontend URL in production
+      methods: ["GET", "POST", "PUT", "DETELE"],
+      credentials: true
     },
   });
 
 // Middleware
-app.use(cors());  // Enable CORS
+app.use(cors(corsOption));  // Enable CORS
 app.use(helmet()); // Secure HTTP headers
 
 app.use("/api/auth",router)
@@ -34,19 +35,9 @@ app.use("/api/freelancer",router)
 app.use("/api/client",router)
 
 
-// io.on("connection", (socket) => {
-//     console.log(`User connected: ${socket.id}`);
-  
-//     socket.on("disconnect", () => {
-//       console.log(`User disconnected: ${socket.id}`);
-//     });
-//   });
-
-
-
 
 // Socket.io connection
-io.on('connection', (socket) => {
+corsOption.on('connection', (socket) => {
     console.log('User connected: ', socket.id);
   
     // Join a room for a specific user (based on userId)
