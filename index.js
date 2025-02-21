@@ -16,7 +16,7 @@ const server = http.createServer(app);
 
 const corsOption = new Server(server, {
     cors: {
-      origin: "localhost:5173", // Change this to your frontend URL in production
+      origin: "*", // Change this to your frontend URL in production
       methods: ["GET", "POST", "PUT", "DETELE"],
       credentials: true
     },

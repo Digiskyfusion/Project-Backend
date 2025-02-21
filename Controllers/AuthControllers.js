@@ -117,40 +117,89 @@ app.use(cookieParser());
 
 
 
-        const signup= async (req, res)=>
-        {
-            try {
-                let {name, email,password, roleType,country,mobileNumber}= req.body;
+        // const signup= async (req, res)=>
+        // {
+        //     try {
+        //         let {name, email,password, roleType,country,mobileNumber,credits}= req.body;
         
-                let userFind= await userModel.findOne({email});
-                if(userFind){
-                    return res.status(200).send('user Already Exist from');
-                }
-                bcrypt.genSalt(10, function(err, salt) {
-                    bcrypt.hash(password, salt,async function(err, hash) {
-                        let user= await userModel.create({
-                            name,
-                            email,
-                            password:hash,
-                            roleType,
-                            country,
-                            mobileNumber,
-                        })
-                        let token = jwt.sign({ email }, process.env.JWT_SECRET_KEY);
-                        res.cookie("token", token)
-                        // res.json(user)
-                        res.status(201).send({ 
-                            success: true,
-                            message:"user register successfuly from backend reg",
-                            user,
-                            token
-                        })
-                    });
-                });
-            } catch (error) {
-                res.status(500).send("error from registration") 
-            }
-        }
+        //         let userFind= await userModel.findOne({email});
+        //         if(userFind){
+        //             return res.status(200).send('user Already Exist from');
+        //         }
+        //         bcrypt.genSalt(10, function(err, salt) {
+        //             bcrypt.hash(password, salt,async function(err, hash) {
+        //                 let user= await userModel.create({
+        //                     name,
+        //                     email,
+        //                     password:hash,
+        //                     roleType,
+        //                     country,
+        //                     mobileNumber,
+        //                     credits
+        //                 })
+        //                 let token = jwt.sign({ email }, process.env.JWT_SECRET_KEY);
+        //                 res.cookie("token", token)
+        //                 res.json(user)
+        //                 res.status(201).send({ 
+        //                     success: true,
+        //                     message:"user register successfuly from backend reg",
+        //                     user,
+        //                     token
+        //                 })
+        //             });
+        //         });
+        //     } catch (error) {
+        //         if (!res.headersSent) {
+        //           res.status(500).json({ message: "Server error" });
+        //       }
+        //       res.status(500).send("error from registration") 
+        //     }
+        // }
+
+        const signup = async (req, res) => {
+          try {
+              let { name, email, password, roleType, country, mobileNumber, credits } = req.body;
+      
+              let userFind = await userModel.findOne({ email });
+              if (userFind) {
+                  return res.status(200).send('User already exists');
+              }
+      
+              // Hash password before saving
+              const salt = await bcrypt.genSalt(10);
+              const hash = await bcrypt.hash(password, salt);
+      
+              // Create user
+              let user = await userModel.create({
+                  name,
+                  email,
+                  password: hash,
+                  roleType,
+                  country,
+                  mobileNumber,
+                  credits
+              });
+      
+              // Generate JWT token
+              let token = jwt.sign({ email }, process.env.JWT_SECRET_KEY);
+              res.cookie("token", token);
+      
+              // Send only one response
+              return res.status(201).json({ 
+                  success: true,
+                  message: "User registered successfully",
+                  user,
+                  token
+              });
+      
+          } catch (error) {
+              console.error(error);
+              if (!res.headersSent) {
+                  return res.status(500).json({ message: "Server error" });
+              }
+          }
+      };
+      
 
 
         const login = async (req, res) => {
