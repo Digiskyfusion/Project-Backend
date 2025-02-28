@@ -4,7 +4,12 @@ const auth= require('../Controllers/AuthControllers');
 const { protect } = require("../Middleware/AuthMiddleware");
 const { loginLimiter } = require("../Middleware/RateLimitMiddleware");
 const { body, validationResult } = require('express-validator');
+const passport = require("passport");
+const jwt = require("jsonwebtoken");
 
+
+
+// router.route("/sendEmail").post(sendMailByUser)
 
 
 router.route("/signup")
@@ -68,6 +73,64 @@ router.route("/getallclient").get(protect, auth.getAllClient);
 router.route("/getsingleclient/:id").get(protect, auth.getSingleClinet);
 router.route("/updateclient/:id").put(protect, auth.updateClinet);
 router.route("/deleteclient/:id").delete(protect, auth.deleteClient);
+
+
+
+
+
+
+
+//google authentication
+
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "http://192.168.29.123:5173/registration" }),
+  (req, res) => {
+    if (!req.user) {
+      return res.redirect("http://192.168.29.123:5173/login");
+    }
+    const token = jwt.sign({ id: req.user._id },process.env.JWT_SECRET_KEY, {
+      expiresIn: "7d",
+    });
+console.log(token);
+
+    res.cookie("token", token, { httpOnly: true, secure: false });
+    res.redirect(`http://192.168.29.123:5173/dashboard}`);
+  }
+);
+
+router.get("/logout", (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      console.error("Logout error:", err);
+      return res.sendStatus(500);
+    }
+
+    req.session = null; // Destroy the session (if using session-based auth)
+    res.clearCookie("token"); // Remove JWT token cookie
+    res.clearCookie("connect.sid"); // If using express-session
+
+    return res.redirect("http://localhost:5173/login"); // Redirect to login page
+  });
+});
+
+
+router.get("/user", (req, res) => {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ message: "Unauthorized" });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    res.json({ user: decoded });
+  } catch (error) {
+    res.status(401).json({ message: "Invalid Token" });
+  }
+});
 
 
 module.exports= router;

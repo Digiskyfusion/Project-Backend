@@ -12,7 +12,7 @@ const planModel= require("../Model/Plan")
 const Category= require ("../Model/category")
 const SubCategory = require("../Model/subCategory")
 const freelancerSchema= require("../Model/freelancer")
-const clientModel= require("../Model/client")
+const clientModel= require("../Model/client");
 app.use(cookieParser());
 
        const resetPasswordMail= async(name, email,token)=>
@@ -117,40 +117,89 @@ app.use(cookieParser());
 
 
 
-        const signup= async (req, res)=>
-        {
-            try {
-                let {name, email,password, roleType,country,mobileNumber}= req.body;
+        // const signup= async (req, res)=>
+        // {
+        //     try {
+        //         let {name, email,password, roleType,country,mobileNumber,credits}= req.body;
         
-                let userFind= await userModel.findOne({email});
-                if(userFind){
-                    return res.status(200).send('user Already Exist from');
-                }
-                bcrypt.genSalt(10, function(err, salt) {
-                    bcrypt.hash(password, salt,async function(err, hash) {
-                        let user= await userModel.create({
-                            name,
-                            email,
-                            password:hash,
-                            roleType,
-                            country,
-                            mobileNumber,
-                        })
-                        let token = jwt.sign({ email }, process.env.JWT_SECRET_KEY);
-                        res.cookie("token", token)
-                        // res.json(user)
-                        res.status(201).send({ 
-                            success: true,
-                            message:"user register successfuly from backend reg",
-                            user,
-                            token
-                        })
-                    });
-                });
-            } catch (error) {
-                res.status(500).send("error from registration") 
-            }
-        }
+        //         let userFind= await userModel.findOne({email});
+        //         if(userFind){
+        //             return res.status(200).send('user Already Exist from');
+        //         }
+        //         bcrypt.genSalt(10, function(err, salt) {
+        //             bcrypt.hash(password, salt,async function(err, hash) {
+        //                 let user= await userModel.create({
+        //                     name,
+        //                     email,
+        //                     password:hash,
+        //                     roleType,
+        //                     country,
+        //                     mobileNumber,
+        //                     credits
+        //                 })
+        //                 let token = jwt.sign({ email }, process.env.JWT_SECRET_KEY);
+        //                 res.cookie("token", token)
+        //                 res.json(user)
+        //                 res.status(201).send({ 
+        //                     success: true,
+        //                     message:"user register successfuly from backend reg",
+        //                     user,
+        //                     token
+        //                 })
+        //             });
+        //         });
+        //     } catch (error) {
+        //         if (!res.headersSent) {
+        //           res.status(500).json({ message: "Server error" });
+        //       }
+        //       res.status(500).send("error from registration") 
+        //     }
+        // }
+
+        const signup = async (req, res) => {
+          try {
+              let { name, email, password, roleType, country, mobileNumber, credits } = req.body;
+      
+              let userFind = await userModel.findOne({ email });
+              if (userFind) {
+                  return res.status(200).send('User already exists');
+              }
+      
+              // Hash password before saving
+              const salt = await bcrypt.genSalt(10);
+              const hash = await bcrypt.hash(password, salt);
+      
+              // Create user
+              let user = await userModel.create({
+                  name,
+                  email,
+                  password: hash,
+                  roleType,
+                  country,
+                  mobileNumber,
+                  credits
+              });
+      
+              // Generate JWT token
+              let token = jwt.sign({ email }, process.env.JWT_SECRET_KEY);
+              res.cookie("token", token);
+      
+              // Send only one response
+              return res.status(201).json({ 
+                  success: true,
+                  message: "User registered successfully",
+                  user,
+                  token
+              });
+      
+          } catch (error) {
+              console.error(error);
+              if (!res.headersSent) {
+                  return res.status(500).json({ message: "Server error" });
+              }
+          }
+      };
+      
 
 
         const login = async (req, res) => {
@@ -173,8 +222,8 @@ app.use(cookieParser());
                 const token = jwt.sign({ email }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
         
                 // Set cookie with security flags
-                res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
-        
+                res.cookie("token", token);
+            
                 // Success response
                 return res.status(200).json({
                     success: true,
@@ -182,8 +231,8 @@ app.use(cookieParser());
                     user: {
                         name: user.name,
                         email: user.email,
+                        token,
                     },
-                    token,
                 });
         
             } catch (error) {
@@ -387,6 +436,8 @@ app.use(cookieParser());
           };
           
 
+
+          // plan
           const createSubscription = async (req, res) => {
             const { name, credit, amount } = req.body;
           
@@ -573,9 +624,15 @@ app.use(cookieParser());
           // freelancer profile
           const createFreelancer =  async (req, res) => {
             try {
+              const existingFreelancer = await freelancerSchema.findOne({ freelancer_id: req.body.freelancer_id });
+              if (existingFreelancer) {
+                return res.status(400).json({ success: false, message: "Freelancer already exists." });
+              }
               const freelancer = new freelancerSchema(req.body);
               await freelancer.save();
               res.status(201).json({ success: true, data: freelancer });
+              console.log(freelancer);
+              
             } catch (error) {
               res.status(400).json({ success: false, error: error.message , message :"hey" });
             }
