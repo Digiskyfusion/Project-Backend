@@ -6,6 +6,8 @@ const User = require('../Model/user');
 const protect = async (req, res, next) => {
     try {
         const token = req.header('Authorization')?.replace('Bearer ', '');
+        // console.log( 'token is ' ,token);
+        
         // console.log(token)
         if (!token) return res.status(401).json({ message: 'No token, authorization denied' });
         

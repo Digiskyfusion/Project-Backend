@@ -15,14 +15,14 @@ const session= require("express-session")
 
 
 
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Increase payload size limit
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 const server = http.createServer(app);
 
 const corsOption = new Server(server, {
     cors: {
-      origin: "http://192.168.29.123:5173", // Change this to your frontend URL in production
+      origin: "http://localhost:5173/", // Change this to your frontend URL in production
       methods: ["GET", "POST", "PUT", "DETELE"],
       credentials: true,
       allowedHeaders:"content-Type,Authorization"
@@ -53,42 +53,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Routes
-app.use("/auth", router);
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // true for port 465, false for other ports
-  auth: {
-    user: "manishsharma5382@gmail.com",
-    pass: "qmkyooqxmehexlpv",
-  },
-});
-
-// app.post("/sendMessage", async (req, res) => {
-//   try {
-//     const { to, subject, text, html } = req.body; // Get details from request body
-
-//     if (!to || !subject || (!text && !html)) {
-//       return res.status(400).json({ message: "Missing required fields" });
-//     }
-
-//     const info = await transporter.sendMail({
-//       from: `"Manish" <manishsharma5382@gmail.com>`, // Replace with your sender name and email
-//       to,
-//       subject,
-//       text,
-//       html,
-//     });
-
-//     console.log("Message sent: %s", info);
-//     res.status(200).json({ message: "Email sent successfully", messageId: info.messageId });
-//   } catch (error) {
-//     console.error("Error sending email:", error);
-//     res.status(500).json({ message: "Error sending email", error: error.message });
-//   }
-// });
 
 // Socket.io connection
 corsOption.on('connection', (socket) => {
