@@ -1,17 +1,3 @@
-// const mongoose= require("mongoose")
-
-// const freelancerSchema = new mongoose.Schema({
-//     id:{
-//         type: mongoose.Types.ObjectId,
-//         ref: "user",
-//         require: true
-//     }
-// })
-
-// module.exports= mongoose.model("freelancer", freelancerSchema);
-
-
-
 
 const mongoose = require("mongoose");
 
@@ -28,7 +14,7 @@ const FreelancerSchema = new mongoose.Schema({
     govt_id_image: { type: String, required: true },
     address: { type: String, required: true },
     country: { type: String, required: true },
-    verified_status: { type: Boolean, default: false },
+    verified_status: { type: String, default: false },
     verification_date: { type: Date },
   },
   professional_details: {

@@ -6,11 +6,12 @@ const { loginLimiter } = require("../Middleware/RateLimitMiddleware");
 const { body, validationResult } = require('express-validator');
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
-
-
-
-// router.route("/sendEmail").post(sendMailByUser)
-
+const UserAuth= require("../Controllers/UserController")
+const ChatAuth= require("../Controllers/ChatController")
+const PlanAuth= require("../Controllers/PlanController")
+const categoryAuth= require("../Controllers/CategoryController")
+const freelancerAuth= require("../Controllers/FreelancerController")
+const ClientAuth= require("../Controllers/ClientController")
 
 router.route("/signup")
   .post(
@@ -30,53 +31,51 @@ router.route("/signup")
   );
 router.route("/login").post(loginLimiter,auth.login);
 router.route("/forget-password").post(auth.forgetPassword);
-router.route("/reset-password").post(protect,auth.resetPassword);
-router.route('/profile/:id').get(auth.getUserProfile); 
-router.route('/profile/:id').put(protect, auth.updateUserProfile);
-router.route("/delete/:id").delete(protect, auth.deleteUser);
+router.route("/reset-password").post(auth.resetPassword);
+
+//user
+router.route('/profile/:id').get(protect,UserAuth.getUserProfile); 
+router.route('/profile/:id').put(protect, UserAuth.updateUserProfile);
+router.route("/delete/:id").delete(protect, UserAuth.deleteUser);
 
 // chat. js
-router.route("/send").post(protect,auth.sendMessage);
-router.route("/history/:userId").get(protect,auth.chatHistoryAPI);
+router.route("/send").post(protect,ChatAuth.sendMessage);
+router.route("/history/:userId").get(protect,ChatAuth.chatHistoryAPI);
 
 // planroute
-router.route("/create").post(protect,auth.createSubscription);
-router.route("/all").get(protect,auth.AllSubscription);
+router.route("/create").post(protect,PlanAuth.createSubscription);
+router.route("/all").get(protect,PlanAuth.AllSubscription);
 
 
 // category and subcategory
-router.route("/createCategory").post(protect, auth.createCategory);
-router.route("/getallCategory").get(protect, auth.getCategories);
-router.route("/singlecategory/:id").get(protect, auth.getCategoryById);
-router.route("/updateCategory/:id").put(protect, auth.updateCategory);
-router.route("/deleteCategory/:id").delete(protect, auth.deleteCategory);
+router.route("/createCategory").post(protect, categoryAuth.createCategory);
+router.route("/getallCategory").get(protect, categoryAuth.getCategories);
+router.route("/singlecategory/:id").get(protect, categoryAuth.getCategoryById);
+router.route("/updateCategory/:id").put(protect, categoryAuth.updateCategory);
+router.route("/deleteCategory/:id").delete(protect, categoryAuth.deleteCategory);
 
 
 // subcategory
-router.route("/subCategory").post(protect, auth.createSubCategory);
-router.route("/getallsubCategory").get(protect, auth.getSubCategories);
-router.route("/singlesubCategory/:id").get(protect, auth.getSubCategoryById);
-router.route("/updatesubCategory/:id").put(protect, auth.updateSubCategory);
-router.route("/deletesubCategory/:id").delete(protect, auth.deleteSubCategory);
+router.route("/subCategory").post(protect, categoryAuth.createSubCategory);
+router.route("/getallsubCategory").get(protect, categoryAuth.getSubCategories);
+router.route("/singlesubCategory/:id").get(protect, categoryAuth.getSubCategoryById);
+router.route("/updatesubCategory/:id").put(protect, categoryAuth.updateSubCategory);
+router.route("/deletesubCategory/:id").delete(protect, categoryAuth.deleteSubCategory);
 
 // freelancer profile
-router.route("/createfreelancer").post(protect, auth.createFreelancer);
-router.route("/getallfreelancers").get(protect, auth.getallfreelancer);
-router.route("/freelancers/:id").get(protect, auth.getSingleFreelancer);
-router.route("/updatefreelancers/:id").put(protect, auth.updatefreelancer);
-router.route("/deletefreelancers/:id").delete(protect, auth.deleteFreelancer);
+router.route("/createfreelancer").post(protect, freelancerAuth.createFreelancer);
+router.route("/getallfreelancers").get(protect, freelancerAuth.getallfreelancer);
+router.route("/freelancers/:id").get(protect, freelancerAuth.getSingleFreelancer);
+router.route("/updatefreelancers/:id").put(protect, freelancerAuth.updatefreelancer);
+router.route("/deletefreelancers/:id").delete(protect, freelancerAuth.deleteFreelancer);
 
 
 // client route
-router.route("/createclient").post(protect, auth.createClient);
-router.route("/getallclient").get(protect, auth.getAllClient);
-router.route("/getsingleclient/:id").get(protect, auth.getSingleClinet);
-router.route("/updateclient/:id").put(protect, auth.updateClinet);
-router.route("/deleteclient/:id").delete(protect, auth.deleteClient);
-
-
-
-
+router.route("/createclient").post(protect,ClientAuth.createClient);
+router.route("/getallclient").get(protect, ClientAuth.getAllClient);
+router.route("/getsingleclient/:id").get(protect, ClientAuth.getSingleClinet);
+router.route("/updateclient/:id").put(protect, ClientAuth.updateClinet);
+router.route("/deleteclient/:id").delete(protect, ClientAuth.deleteClient);
 
 
 
@@ -131,6 +130,8 @@ router.get("/user", (req, res) => {
     res.status(401).json({ message: "Invalid Token" });
   }
 });
+
+
 
 
 module.exports= router;
