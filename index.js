@@ -12,7 +12,7 @@ const nodemailer = require("nodemailer");
 // const  sendMaileByUser  = require('./Mail/SendMail');
 const passport = require("passport");
 const session= require("express-session")
-
+// const jobRoutes= require("./router/routers")
 
 
 // Increase payload size limit
@@ -40,7 +40,7 @@ app.use("/api/plan",router)
 app.use("/api/category",router)
 app.use("/api/freelancer",router)
 app.use("/api/client",router)
-
+app.use("/api/jobs", router);
 // google authentication
 app.use(
   session({

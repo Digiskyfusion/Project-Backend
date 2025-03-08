@@ -12,6 +12,8 @@ const PlanAuth= require("../Controllers/PlanController")
 const categoryAuth= require("../Controllers/CategoryController")
 const freelancerAuth= require("../Controllers/FreelancerController")
 const ClientAuth= require("../Controllers/ClientController")
+const Jobauth = require("../Controllers/JobController");
+const upload = require("../middleware/upload");
 
 router.route("/signup")
   .post(
@@ -77,59 +79,61 @@ router.route("/getsingleclient/:id").get(protect, ClientAuth.getSingleClinet);
 router.route("/updateclient/:id").put(protect, ClientAuth.updateClinet);
 router.route("/deleteclient/:id").delete(protect, ClientAuth.deleteClient);
 
+//upload job
+router.route("/").get(protect, Jobauth.getAllJobs);
+router.route('/').post(protect,upload.single("file"),Jobauth.postJob);
+
+// //google authentication
+
+// router.get(
+//   "/google",
+//   passport.authenticate("google", { scope: ["profile", "email"] })
+// );
+
+// router.get(
+//   "/google/callback",
+//   passport.authenticate("google", { failureRedirect: "http://192.168.29.123:5173/registration" }),
+//   (req, res) => {
+//     if (!req.user) {
+//       return res.redirect("http://192.168.29.123:5173/login");
+//     }
+//     const token = jwt.sign({ id: req.user._id },process.env.JWT_SECRET_KEY, {
+//       expiresIn: "7d",
+//     });
+// console.log(token);
+
+//     res.cookie("token", token, { httpOnly: true, secure: false });
+//     res.redirect(`http://192.168.29.123:5173/dashboard}`);
+//   }
+// );
+
+// router.get("/logout", (req, res) => {
+//   req.logout((err) => {
+//     if (err) {
+//       console.error("Logout error:", err);
+//       return res.sendStatus(500);
+//     }
+
+//     req.session = null; // Destroy the session (if using session-based auth)
+//     res.clearCookie("token"); // Remove JWT token cookie
+//     res.clearCookie("connect.sid"); // If using express-session
+
+//     return res.redirect("http://localhost:5173/login"); // Redirect to login page
+//   });
+// });
 
 
-//google authentication
+// router.get("/user", (req, res) => {
+//   const token = req.cookies.token;
+//   if (!token) return res.status(401).json({ message: "Unauthorized" });
 
-router.get(
-  "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
-router.get(
-  "/google/callback",
-  passport.authenticate("google", { failureRedirect: "http://192.168.29.123:5173/registration" }),
-  (req, res) => {
-    if (!req.user) {
-      return res.redirect("http://192.168.29.123:5173/login");
-    }
-    const token = jwt.sign({ id: req.user._id },process.env.JWT_SECRET_KEY, {
-      expiresIn: "7d",
-    });
-console.log(token);
-
-    res.cookie("token", token, { httpOnly: true, secure: false });
-    res.redirect(`http://192.168.29.123:5173/dashboard}`);
-  }
-);
-
-router.get("/logout", (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      console.error("Logout error:", err);
-      return res.sendStatus(500);
-    }
-
-    req.session = null; // Destroy the session (if using session-based auth)
-    res.clearCookie("token"); // Remove JWT token cookie
-    res.clearCookie("connect.sid"); // If using express-session
-
-    return res.redirect("http://localhost:5173/login"); // Redirect to login page
-  });
-});
-
-
-router.get("/user", (req, res) => {
-  const token = req.cookies.token;
-  if (!token) return res.status(401).json({ message: "Unauthorized" });
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    res.json({ user: decoded });
-  } catch (error) {
-    res.status(401).json({ message: "Invalid Token" });
-  }
-});
+//   try {
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+//     res.json({ user: decoded });
+//   } catch (error) {
+//     res.status(401).json({ message: "Invalid Token" });
+//   }
+// });
 
 
 
