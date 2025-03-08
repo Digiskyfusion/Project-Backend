@@ -11,7 +11,7 @@ app.use(cookieParser());
 
         const signup = async (req, res) => {
           try {
-              let { name, email, password, roleType, country, mobileNumber, credits } = req.body;
+              let { name, email, password, roleType, country, mobileNumber } = req.body;
       
               let userFind = await userModel.findOne({ email });
               if (userFind) {
@@ -30,13 +30,18 @@ app.use(cookieParser());
                   roleType,
                   country,
                   mobileNumber,
-                  credits
               });
       
               // Generate JWT token
               let token = jwt.sign({ email }, process.env.JWT_SECRET_KEY);
               res.cookie("token", token);
-      
+              await sendMailNodemailer({
+                to: email,
+                subject: "Account created SuccessFully ",
+                text: "hello",
+                html: `<p>Hi ${user.name},</p>
+                <p>Hy Welcome to the freelancer website:</p>`
+              });
               // Send only one response
               return res.status(201).json({ 
                   success: true,
@@ -78,7 +83,13 @@ app.use(cookieParser());
         
                 // Set cookie with security flags
                 res.cookie("token", token);
-            
+                await sendMailNodemailer({
+                    to: email,
+                    subject: "login created SuccessFully ",
+                    text: "hello",
+                    html: `<p>Hi ${user.name},</p>
+                    <p>Hy You are login successfully:</p>`
+                  });
                 // Success response
                 return res.status(200).json({
                     success: true,
