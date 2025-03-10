@@ -47,9 +47,11 @@ app.use(cookieParser());
                   success: true,
                   message: "User registered successfully",
                   user: {
-                          _id: user._id,   // ✅ Ensure _id is sent
+                          _id: user._id,  
                           name: user.name,
                           email: user.email,
+                          roleType:user.roleType,
+                          credits: user.credits
                         },
                   token 
               });
@@ -79,7 +81,7 @@ app.use(cookieParser());
                 }
         
                 // Generate JWT token
-                const token = jwt.sign({ email }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
+                const token = jwt.sign({ email,id: user._id, roleType: user.roleType }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
         
                 // Set cookie with security flags
                 res.cookie("token", token);
@@ -91,12 +93,16 @@ app.use(cookieParser());
                     <p>Hy You are login successfully:</p>`
                   });
                 // Success response
+                // console.log(req.user);
+                
                 return res.status(200).json({
                     success: true,
                     message: "Successfully logged in",
                     user: {
+                        _id: user._id,
                         name: user.name,
                         email: user.email,
+                       roleType: user.roleType,
                         token,
                     },
                 });
