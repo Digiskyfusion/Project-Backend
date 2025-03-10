@@ -13,7 +13,7 @@ const categoryAuth= require("../Controllers/CategoryController")
 const freelancerAuth= require("../Controllers/FreelancerController")
 const ClientAuth= require("../Controllers/ClientController")
 const Jobauth = require("../Controllers/JobController");
-const upload = require("../middleware/upload");
+const upload = require("../Middleware/Upload");
 
 router.route("/signup")
   .post(
