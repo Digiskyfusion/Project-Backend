@@ -9,7 +9,7 @@ const { sendMailNodemailer } = require("../Mail/SendMail");
 app.use(cookieParser());
 
 
-        const signup = async (req, res) => {
+const signup = async (req, res) => {
           try {
               let { name, email, password, roleType, country, mobileNumber } = req.body;
       
