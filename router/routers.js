@@ -50,19 +50,19 @@ router.route("/all").get(protect,PlanAuth.AllSubscription);
 
 
 // category and subcategory
-router.route("/createCategory").post(protect, categoryAuth.createCategory);
-router.route("/getallCategory").get(protect, categoryAuth.getCategories);
-router.route("/singlecategory/:id").get(protect, categoryAuth.getCategoryById);
-router.route("/updateCategory/:id").put(protect, categoryAuth.updateCategory);
-router.route("/deleteCategory/:id").delete(protect, categoryAuth.deleteCategory);
+router.route("/createCategory").post( categoryAuth.createCategory);
+router.route("/getallCategory").get( categoryAuth.getCategories);
+router.route("/singlecategory/:id").get( categoryAuth.getCategoryById);
+router.route("/updateCategory/:id").put( categoryAuth.updateCategory);
+router.route("/deleteCategory/:id").delete( categoryAuth.deleteCategory);
 
 
 // subcategory
-router.route("/subCategory").post(protect, categoryAuth.createSubCategory);
-router.route("/getallsubCategory").get(protect, categoryAuth.getSubCategories);
-router.route("/singlesubCategory/:id").get(protect, categoryAuth.getSubCategoryById);
-router.route("/updatesubCategory/:id").put(protect, categoryAuth.updateSubCategory);
-router.route("/deletesubCategory/:id").delete(protect, categoryAuth.deleteSubCategory);
+router.route("/subCategory").post( categoryAuth.createSubCategory);
+router.route("/getallsubCategory").get( categoryAuth.getSubCategories);
+router.route("/singlesubCategory/:id").get( categoryAuth.getSubCategoryById);
+router.route("/updatesubCategory/:id").put( categoryAuth.updateSubCategory);
+router.route("/deletesubCategory/:id").delete( categoryAuth.deleteSubCategory);
 
 // freelancer profile
 router.route("/createfreelancer").post(protect, freelancerAuth.createFreelancer);
