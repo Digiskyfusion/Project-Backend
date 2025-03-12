@@ -9,12 +9,12 @@ const { check } = require('express-validator');
 const cors = require('cors');
 const helmet = require('helmet');
 const nodemailer = require("nodemailer");
-// const  sendMaileByUser  = require('./Mail/SendMail');
 const passport = require("passport");
 const session= require("express-session")
-// const jobRoutes= require("./router/routers")
 
 app.use(require("multer")().single("file")); // For file uploadss
+app.use("/uploads", express.static("uploads"));
+
 // Increase payload size limit
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
@@ -22,7 +22,7 @@ const server = http.createServer(app);
 
 const corsOption = new Server(server, {
     cors: {
-      origin: "http://localhost:5173/", // Change this to your frontend URL in production
+      origin: "*", // Change this to your frontend URL in production
       methods: ["GET", "POST", "PUT", "DETELE"],
       credentials: true,
       allowedHeaders:"content-Type,Authorization"

@@ -27,6 +27,41 @@ const createFreelancer = async (req, res) => {
   }
 };
 
+
+
+// const createFreelancer = async (req, res) => {
+//   try {
+//     console.log("Request Body:", req.body);
+//     console.log("Uploaded Files:", req.files); // Check uploaded files
+//     const existingFreelancer = await freelancerSchema.findOne({ freelancer_id: req.body.freelancer_id });
+
+//     if (existingFreelancer) {
+//       return res.status(400).json({ success: false, message: "Freelancer already exists" });
+//     }
+
+//     const newFreelancer = new freelancerSchema({
+//       ...req.body,
+//       profile_image: req.files?.profile_image?.[0]?.path || "",
+//       govt_id_image: req.files?.govt_id_image?.[0]?.path || "",
+//     });
+
+//     await newFreelancer.save();
+
+//     res.status(201).json({
+//       success: true,
+//       message: "Freelancer profile created yess",
+//       freelancer: newFreelancer,
+//     });
+//   } catch (error) {
+//     console.error("Error creating freelancer:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Error creating freelancer",
+//       error: error.message,
+//     });
+//   }
+// };
+
 // get all freelancer
 const getallfreelancer = async (req, res) => {
   try {
@@ -86,6 +121,7 @@ const deleteFreelancer = async (req, res) => {
 };
 
 module.exports = {
+  // createFreelancer,
   createFreelancer,
   getallfreelancer,
   getSingleFreelancer,

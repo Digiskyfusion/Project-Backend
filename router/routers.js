@@ -65,7 +65,10 @@ router.route("/updatesubCategory/:id").put(protect, categoryAuth.updateSubCatego
 router.route("/deletesubCategory/:id").delete(protect, categoryAuth.deleteSubCategory);
 
 // freelancer profile
-router.route("/createfreelancer").post(protect, freelancerAuth.createFreelancer);
+router.route("/createfreelancer").post(upload.fields([
+  { name: 'profile_image', maxCount: 1 },
+  { name: 'govt_id_image', maxCount: 1 }
+]), freelancerAuth.createFreelancer);
 router.route("/getallfreelancers").get(protect, freelancerAuth.getallfreelancer);
 router.route("/freelancers/:id").get(protect, freelancerAuth.getSingleFreelancer);
 router.route("/updatefreelancers/:id").put(protect, freelancerAuth.updatefreelancer);
