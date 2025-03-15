@@ -1,20 +1,27 @@
 const express = require("express");
 const app = express();
-const userModel = require("../Model/user");
 const User = require("../Model/user");
 
+// Get all users
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password"); // Exclude password field
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Get user profile by ID
 const getUserProfile = async (req, res) => {
-  const userId = req.params.id; // Extract user ID from URL parameter
-  // console.log(userId);
+  const userId = req.params.id;
 
   try {
-    // Fetch user details, excluding sensitive fields like 'password'
-    const user = await userModel.findById(userId).select("-password"); // Use your User model to find by ID
+    const user = await User.findById(userId).select("-password");
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
-
-    // Return the user data in the response
     res.json(user);
   } catch (error) {
     console.error(error);
@@ -22,11 +29,9 @@ const getUserProfile = async (req, res) => {
   }
 };
 
+// Update user profile
 const updateUserProfile = async (req, res) => {
-  console.log("caleled");
   try {
-    // console.log(req.user)
-    // console.log(req.params)
     if (req.user.id !== req.params.id) {
       return res.status(403).json({ message: "Unauthorized action" });
     }
@@ -35,10 +40,11 @@ const updateUserProfile = async (req, res) => {
     }).select("-password");
     res.json(updatedUser);
   } catch (error) {
-    res.status(500).json({ message: ("hello", error.message) });
+    res.status(500).json({ message: error.message });
   }
 };
 
+// Delete user
 const deleteUser = async (req, res) => {
   try {
     if (req.user.roleType !== "admin" && req.user.id === req.params.id) {
@@ -51,4 +57,4 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { getUserProfile, updateUserProfile, deleteUser };
+module.exports = { getAllUsers, getUserProfile, updateUserProfile, deleteUser };

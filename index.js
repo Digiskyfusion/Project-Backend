@@ -101,11 +101,9 @@ corsOption.on('connection', (socket) => {
   });
 
 
-mongooes().then(()=>
-    {
-        app.listen(8000,()=>
-        {
-            console.log(`connected succesfully`);
-            
-        })
-    })
+  mongooes().then(() => {
+    const PORT = 5000;
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+});

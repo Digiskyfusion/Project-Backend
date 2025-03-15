@@ -35,7 +35,8 @@ router.route("/login").post(loginLimiter,auth.login);
 router.route("/forget-password").post(auth.forgetPassword);
 router.route("/reset-password").post(auth.resetPassword);
 
-//user
+//user 
+router.route('/users').get(UserAuth.getAllUsers); 
 router.route('/profile/:id').get(protect,UserAuth.getUserProfile); 
 router.route('/profile/:id').put(protect, UserAuth.updateUserProfile);
 router.route("/delete/:id").delete(protect, UserAuth.deleteUser);
@@ -65,11 +66,11 @@ router.route("/updatesubCategory/:id").put( categoryAuth.updateSubCategory);
 router.route("/deletesubCategory/:id").delete( categoryAuth.deleteSubCategory);
 
 // freelancer profile
-router.route("/createfreelancer").post(protect, freelancerAuth.createFreelancer);
-router.route("/getallfreelancers").get(protect, freelancerAuth.getallfreelancer);
-router.route("/freelancers/:id").get(protect, freelancerAuth.getSingleFreelancer);
-router.route("/updatefreelancers/:id").put(protect, freelancerAuth.updatefreelancer);
-router.route("/deletefreelancers/:id").delete(protect, freelancerAuth.deleteFreelancer);
+router.route("/createfreelancer").post(freelancerAuth.createFreelancer);
+router.route("/getallfreelancers").get( freelancerAuth.getallfreelancer);
+router.route("/freelancers/:id").get( freelancerAuth.getSingleFreelancer);
+router.route("/updatefreelancers/:id").put(freelancerAuth.updatefreelancer);
+router.route("/deletefreelancers/:id").delete(freelancerAuth.deleteFreelancer);
 
 
 // client route

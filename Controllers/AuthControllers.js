@@ -64,57 +64,55 @@ app.use(cookieParser());
       
 
 
-        const login = async (req, res) => {
-            try {
-                const { email, password } = req.body;
-        
-                // Check if user exists
-                const user = await userModel.findOne({ email });
-                if (!user) {
-                    return res.status(400).json({ success: false, message: "Invalid user" });
-                }
-        
-                // Compare passwords
-                const isMatch = await bcrypt.compare(password, user.password);
-                if (!isMatch) {
-                    return res.status(400).json({ success: false, message: "Invalid credentials" });
-                }
-        
-                // Generate JWT token
-                const token = jwt.sign({ email,id: user._id, roleType: user.roleType }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
-        
-                // Set cookie with security flags
-                res.cookie("token", token);
-                await sendMailNodemailer({
-                    to: email,
-                    subject: "login created SuccessFully ",
-                    text: "hello",
-                    html: `<p>Hi ${user.name},</p>
-                    <p>Hy You are login successfully:</p>`
-                  });
-                // Success response
-                // console.log(req.user);
-                
-                return res.status(200).json({
-                    success: true,
-                    message: "Successfully logged in",
-                    user: {
-                        _id: user._id,
-                        name: user.name,
-                        email: user.email,
-                       roleType: user.roleType,
-                        token,
-                    },
-                });
-        
-            } catch (error) {
-                console.error("Login Error:", error);
-                return res.status(500).json({ success: false, message: "Internal Server Error" });
+      const login = async (req, res) => {
+        try {
+            const { email, password } = req.body;
+    
+            // Check if user exists
+            const user = await userModel.findOne({ email });
+            if (!user) {
+                return res.status(401).json({ success: false, message: "Invalid email or password" });
             }
-        };
-
-       
-
+    
+            // Compare passwords
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) {
+                return res.status(401).json({ success: false, message: "Invalid email or password" });
+            }
+    
+            // Generate JWT token
+            const token = jwt.sign(
+                { email, id: user._id, roleType: user.roleType },
+                process.env.JWT_SECRET_KEY,
+                { expiresIn: "1h" }
+            );
+    
+            // Set cookie with HTTP-only and Secure flag
+            res.cookie("token", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production", // Secure only in production
+                sameSite: "Strict",
+                maxAge: 60 * 60 * 1000, // 1 hour
+            });
+    
+            return res.status(200).json({
+                success: true,
+                message: "Successfully logged in",
+                user: {
+                    _id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    roleType: user.roleType,
+                    token,
+                },
+            });
+    
+        } catch (error) {
+            console.error("Login Error:", error);
+            return res.status(500).json({ success: false, message: "Internal Server Error" });
+        }
+    };
+    
         const forgetPassword = async (req, res) => {
             try {
                 let { email } = req.body;
