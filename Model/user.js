@@ -10,10 +10,6 @@ const UserSchema = new mongoose.Schema({
   mobileNumber:{type:  String, required:true},
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date },
-  token:{
-    type:String,
-    default:""
-  },
   credits: { type: Number, default: 0 },
 },{timestamps:true});
 UserSchema.index({ tokenExpiresAt: 1 }, { expireAfterSeconds: 0 });
