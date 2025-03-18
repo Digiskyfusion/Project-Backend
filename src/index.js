@@ -37,7 +37,8 @@ app.use(cookieParser());
 
 // CORS configuration
 const allowedOrigins = [
-  "https://digisky.ai/",
+  "https://digisky.ai",
+  "https://www.digisky.ai",
   "http://localhost:4173",
   "http://localhost:5173"
 ];
@@ -95,9 +96,11 @@ const server = app.listen(port, () => {
 // Socket.io setup
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: allowedOrigins,
+    credentials: true,
   },
 });
+
 
 // Map to store socket IDs of connected users
 const connectedUsers = new Map();
