@@ -7,14 +7,14 @@ const sendMailNodemailer= async ({to, subject,text,html})=>
         host: "smtp.gmail.com",
         port: 587,
         auth: {
-          user: "manishsharma5382@gmail.com",
-          pass: "rxotvhjyxbfmnwjl",
+          user: "digiskyfusion@gmail.com",
+          pass: "ucuygzqkbgpxonfx",
         },
       });
 
 
       const info = await transporter.sendMail({
-        from: '"Manish" <manishsharma5382@gmail.com>', // sender address
+        from: '"Karan" <digiskyfusion@gmail.com>', // sender address
         to,
         subject,
         text,

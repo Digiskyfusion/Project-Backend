@@ -8,37 +8,95 @@ app.use(cookieParser());
 // clinetSchema crud
 
 // createClient
-const createClient = async (req, res) => {
-  try {
-    const { client_id, image, mobileNumber, govt_id_proof, govt_id_number } =
-      req.body;
+// const createClient = async (req, res) => {
+//   try {
+//     const { client_id, mobileNumber, govt_id_number } =req.body;
 
+//  const existingClient = await clientModel.findOne({ client_id });
+//     if (existingClient) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Client already exists",
+//       });
+//     }
+//     const image = req.files["image"] ? req.files["image"][0].path : null;
+//     const govt_id_proof = req.files["govt_id_proof"] ? req.files["govt_id_proof"][0].path : null;
+
+
+//     const newClient = new clientModel({
+//       client_id,
+//       image,
+//       mobileNumber,
+//       govt_id_proof,
+//       govt_id_number,
+//     });
+//     await newClient.save();
+//     //  console.log(newClient);
+//     res
+//       .status(201)
+//       .json({
+//         success: true,
+//         message: "Client added successfully",
+//         data: newClient,
+//       });
+//   } catch (err) {
+//     res
+//       .status(500)
+//       .json({
+//         success: false,
+//         message: "Error adding client",
+//         error: err.message,
+//       });
+//   }
+// };
+
+const createClient=async (req, res) => {
+  try {
+    const { client_id, image, mobileNumber, govt_id_proof, govt_id_number } = req.body;
+
+    // Check if client already exists
+    const existingClient = await clientModel.findOne({ client_id });
+    if (existingClient) {
+      return res.status(400).json({
+        success: false,
+        message: "Client already exists",
+      });
+    }
+
+    // Ensure images are provided
+    if (!image || !govt_id_proof) {
+      return res.status(400).json({
+        success: false,
+        message: "Image and Govt ID Proof are required",
+      });
+    }
+
+    // Save client data
     const newClient = new clientModel({
       client_id,
-      image,
+      image, // Supabase URL
       mobileNumber,
-      govt_id_proof,
+      govt_id_proof, // Supabase URL
       govt_id_number,
     });
+
     await newClient.save();
-    //  console.log(newClient);
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "Client added successfully",
-        data: newClient,
-      });
+
+    res.status(201).json({
+      success: true,
+      message: "Client added successfully",
+      data: newClient,
+    });
+
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error adding client",
-        error: err.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error adding client",
+      error: err.message,
+    });
   }
 };
+
 
 // get all client
 const getAllClient = async (req, res) => {

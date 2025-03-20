@@ -14,6 +14,29 @@ const freelancerAuth= require("../Controllers/FreelancerController")
 const ClientAuth= require("../Controllers/ClientController")
 const Jobauth = require("../Controllers/JobController");
 const upload = require("../Middleware/Upload");
+const clientProfileauth= require("../Controllers/ClientProfileController")
+const freelancerProfileauth= require("../Controllers/FreelancerProfileControllers")
+const reviewAuth= require("../Controllers/ReviewController")
+const contactusAuth= require("../Controllers/ContactUs")
+//freelancerProfile
+router.post("/createfreelancerprofile",protect, upload.single("profileImage"),freelancerProfileauth.createFreelancer);
+router.get("/getallfreelancerprofile", freelancerProfileauth.getFreelancers);
+router.get("/getfreelancerprofile/:userId", freelancerProfileauth.getFreelancerByUserId);
+router.get("/getfreelancerprofile/:id", freelancerProfileauth.getfreelancerById);
+router.put("/updatefreelancerprofile/:userId", freelancerProfileauth.updateFreelancerProfile);
+
+
+
+//clientProfile
+router.post("/createProfile",protect, upload.single("profileImage"), clientProfileauth.createClients);
+// router.post("/createProfile",clientProfileauth.createClients);
+router.get("/getclientprofile",clientProfileauth.getClients);
+router.get("/getclientprofile/:id",clientProfileauth.getClientById);
+
+//review create
+router.route("/allreview").get(reviewAuth.getAllreview)
+router.route("/createreview").post(reviewAuth.createReview)
+
 
 router.route("/signup")
   .post(
@@ -66,8 +89,9 @@ router.route("/deletesubCategory/:id").delete(protect, categoryAuth.deleteSubCat
 
 // freelancer profile
 router.route("/createfreelancer").post(upload.fields([
-  { name: 'profile_image', maxCount: 1 },
-  { name: 'govt_id_image', maxCount: 1 }
+  { name: "profile_image", maxCount: 1 },
+  { name: " govt_id_image", maxCount: 1 },
+  { name: "resume", maxCount: 1 },
 ]), freelancerAuth.createFreelancer);
 router.route("/getallfreelancers").get(protect, freelancerAuth.getallfreelancer);
 router.route("/freelancers/:id").get(protect, freelancerAuth.getSingleFreelancer);
@@ -76,7 +100,8 @@ router.route("/deletefreelancers/:id").delete(protect, freelancerAuth.deleteFree
 
 
 // client route
-router.route("/createclient").post(protect,upload.single("file"),ClientAuth.createClient);
+router.route("/createclient").post(upload.fields([{ name: "image" }, { name: "govt_id_proof" }]),ClientAuth.createClient);
+// router.route("/createclient").post(ClientAuth.createClient);
 router.route("/getallclient").get(protect, ClientAuth.getAllClient);
 router.route("/getsingleclient/:id").get(protect, ClientAuth.getSingleClinet);
 router.route("/updateclient/:id").put(protect, ClientAuth.updateClinet);
@@ -90,7 +115,7 @@ router.route('/:id').put(protect,Jobauth.updateJob);
 router.route('/api/user/me').put(protect,Jobauth.findById);
 
 
-
-
+// contact us 
+router.route("/conatctus").post(contactusAuth.contact)
 
 module.exports= router;

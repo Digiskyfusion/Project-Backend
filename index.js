@@ -12,9 +12,8 @@ const nodemailer = require("nodemailer");
 const passport = require("passport");
 const session= require("express-session")
 
-app.use(require("multer")().single("file")); // For file uploadss
-app.use("/uploads", express.static("uploads"));
 
+app.use("/uploads", express.static("uploads"));
 // Increase payload size limit
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
@@ -41,6 +40,11 @@ app.use("/api/category",router)
 app.use("/api/freelancer",router)
 app.use("/api/client",router)
 app.use("/api/jobs", router);
+app.use("/api/review", router);
+app.use("/", router)
+app.use("/api/freelancersP", router);
+app.use("/contact", router)
+
 // google authentication
 app.use(
   session({
@@ -101,9 +105,11 @@ corsOption.on('connection', (socket) => {
   });
 
 
+
+
 mongooes().then(()=>
     {
-        app.listen(8000,()=>
+        app.listen(3000,()=>
         {
             console.log(`connected succesfully`);
             

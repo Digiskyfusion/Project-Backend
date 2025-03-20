@@ -2,9 +2,8 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const planModel = require("../Model/plan");
+const userModel = require("../Model/user")
 app.use(cookieParser());
-
-// plan
 const createSubscription = async (req, res) => {
   const { name, credit, amount } = req.body;
 
@@ -14,7 +13,9 @@ const createSubscription = async (req, res) => {
   }
 
   try {
+    // Create new plan
     const newPlan = new planModel({
+      user_id: req.user,
       name,
       amount,
       credit,
@@ -22,12 +23,18 @@ const createSubscription = async (req, res) => {
 
     await newPlan.save();
 
-    return res
-      .status(201)
-      .json({
-        message: "Subscription plan created successfully",
-        plan: newPlan,
-      });
+    // Update user's credits
+    const updatedUser = await userModel.findByIdAndUpdate(
+      req.user, 
+      { $inc: { credits: credit } }, // Increment credits
+      { new: true }
+    );
+console.log(updatedUser)
+    return res.status(201).json({
+      message: "Subscription plan created successfully",
+      plan: newPlan,
+      updatedCredits: updatedUser.credits, // Sending updated credits in response
+    });
   } catch (error) {
     console.error("Error creating subscription plan:", error);
     return res
@@ -35,6 +42,7 @@ const createSubscription = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
 
 const AllSubscription = async (req, res) => {
   try {

@@ -8,8 +8,6 @@ const UserSchema = new mongoose.Schema({
   roleType: { type: String, enum: ["freelancer", "client"], required: true },
   country: { type: String, required: true },
   mobileNumber:{type:  String, required:true},
-  resetPasswordToken: { type: String },
-  resetPasswordExpires: { type: Date },
   token:{
     type:String,
     default:""
