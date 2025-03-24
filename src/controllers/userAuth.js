@@ -24,7 +24,7 @@ class userAuthController {
     if (user) {
       const token = await jwt.sign(
         { userId: user._id },
-        process.env.JWT_SECRET_KEY,
+        process.env.JWT_SECRET,
         {
           expiresIn: "1d",
         }
