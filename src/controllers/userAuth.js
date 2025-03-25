@@ -38,22 +38,132 @@ class userAuthController {
       const info = await transporter.sendMail({
         from: process.env.EMAIL_FROM,
         to: user.email,
-        subject: "Welcome to Digisky!",
-        text: `Hi ${user.name},
+        subject: "Welcome to BizChrome!",
+        text: `Hello ${user.name},\n\nThank you for registering with us! We're excited to have you on board.\n\nBest regards,\nThe BizChrome Team`,
+        html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You - BizChrome</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #1e3a8a, #4f46e5);
+            text-align: center;
+            color: #ffffff;
+        }
 
-Welcome to DigiSkyfusion! 🚀 We’re excited to have you on board.
+        .email-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            overflow: hidden;
+        }
 
-Your journey to connecting with top freelancers and businesses starts now. Complete your profile to get the best experience.
+        .header {
+            padding: 20px;
+            background: #1e3a8a;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            position: relative;
+        }
 
-🔹 Post Jobs | 🔹 Find Work | 🔹 Monetize Your Skills
+        .logo {
+            width: 50px;
+            margin-right: 15px;
+        }
 
-👉 [Complete Your Profile Now]
+        .thank-you-text {
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color:white;
+        }
 
-Need help? We’re here for you. Contact us anytime at digiskyhelp@gmail.com.
 
-Cheers,
-The DigiSkyfusion Team`,
-       
+        .content {
+            padding: 30px;
+        }
+
+        h1 {
+            color: #1e3a8a;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+
+       .btn {
+    background: linear-gradient(to right, #4A00E0, #8E2DE2);
+    color: white; /* Ensure text visibility */
+    font-weight: bold;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+
+        .btn:hover {
+            background: linear-gradient(135deg, #1e3a8a, #0f254a);
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .footer {
+            font-size: 14px;
+            color: #7f8c8d;
+            padding: 15px;
+            background: #f1f1f1;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="email-container">
+        <!-- Header Section -->
+        <div class="header" style=" display: flex;
+            align-items: center;
+            justify-content: center;">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDZc1Wv8hCozA95jx0Ug2FgMEKMBJ_Ry4ijQ&s" alt="BizChrome Logo" class="logo">
+            <div class="thank-you-text">Thank You!</div>
+        </div>
+
+        <!-- Content Section -->
+        <div class="content">
+            <h1>🎉 Welcome to BizChrome! 🎉</h1>
+            <p>Hello <strong>${user.name}</strong>,</p>
+            <p>We truly appreciate you joining us! Your account is now active, and we can’t wait for you to explore the amazing features we offer. 🚀</p>
+
+            <a href="${link}" style="color:white;" class="btn">Access Your Account</a>
+
+            <p>Need assistance? Our support team is always here to help. Enjoy your journey with BizChrome! 🌟</p>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            &copy; ${new Date().getFullYear()} BizChrome. All rights reserved.
+        </div>
+    </div>
+
+</body>
+</html>
+`, // HTML body
       });
 
       return res.status(200).send({ message: "User registered successfully", info });
@@ -83,7 +193,7 @@ The DigiSkyfusion Team`,
       // console.log("Login successful. Token generated:", { token, userId: user._id });
 
       // Send the userId and token in the response
-      res.status(200).json({ userId: user._id, token,  roleType: user.roleType , mobileNumber : user.mobileNumber , email : user.email , country: user.country , name : user.name ,  message: "Login successful" });
+      res.status(200).json({ userId: user._id, token,  roleType: user.roleType , mobileNumber : user.mobileNumber , email : user.email , location: user.location , name : user.name ,  message: "Login successful" });
       console.log(user.roleType);
   } catch (error) {
       console.error("Error during login:", error);
@@ -200,7 +310,7 @@ The DigiSkyfusion Team`,
     const info = await transporter.sendMail({
       from: process.env.EMAIL_FROM,
       to: user.email,
-      subject: "Digisky email verification",
+      subject: "BizChrome email verification",
       text: "Hello world?", // plain text body
       html: `<span>Here is your one-time OTP: ${code}</span>
       <br>
@@ -280,7 +390,7 @@ The DigiSkyfusion Team`,
       const info = await transporter.sendMail({
         from: process.env.EMAIL_FROM, // sender address
         to: user.email, // list of receivers
-        subject: "Digisky Password Reset Link",
+        subject: "BizChrome Password Reset Link",
         html:` <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -379,7 +489,7 @@ The DigiSkyfusion Team`,
             <div class="email-container">
                 <!-- Header Section -->
                 <div class="header">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDZc1Wv8hCozA95jx0Ug2FgMEKMBJ_Ry4ijQ&s" alt="Digisky Logo" class="logo">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDZc1Wv8hCozA95jx0Ug2FgMEKMBJ_Ry4ijQ&s" alt="BizChrome Logo" class="logo">
                 </div>
                 <!-- Content Section -->
                 <div class="content">
@@ -394,7 +504,7 @@ The DigiSkyfusion Team`,
         
                 <!-- Footer Section -->
                 <div class="footer">
-                    &copy; ${new Date().getFullYear()} Digisky. All rights reserved.
+                    &copy; ${new Date().getFullYear()} BizChrome. All rights reserved.
                 </div>
             </div>
         

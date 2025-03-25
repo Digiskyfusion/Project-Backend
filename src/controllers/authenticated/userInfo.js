@@ -7,7 +7,7 @@ class userInfoController {
     try {
       const userInfo = await UserModel.findById(
         req.userId,
-        "name email roleType country verification credits mobileNumber"
+        "name email roleType location verification credits mobileNumber"
       );
       return res.status(200).send(userInfo);
     } catch (error) {
@@ -19,14 +19,14 @@ class userInfoController {
   static editProfile = async (req, res) => {
     try {
       const userId = req.userId;
-      const { name, email, country, roleType, image, mobileNumber } = req.body;
+      const { name, email, location, roleType, image, mobileNumber } = req.body;
 
       // Initialize object to hold fields to update
       const updateFields = {};
 
       if (name) updateFields.name = name;
       if (email) updateFields.email = email;
-      if (country) updateFields.country = country;
+      if (location) updateFields.location = location;
       if (roleType) updateFields.roleType = roleType;
       if (image) updateFields.image = image;
 
@@ -45,10 +45,10 @@ class userInfoController {
         await ProfileModel.deleteOne({ userId: userId });
       }
 
-      if (country) {
+      if (location) {
         await ProfileModel.findOneAndUpdate(
           { userId: userId },  // Filter by userId
-          { country }           // Update country
+          { location }           // Update location
         );
       }
 
