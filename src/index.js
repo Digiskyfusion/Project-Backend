@@ -1,5 +1,4 @@
 import express from "express";
-import "./scheduleEmails.js";
 import "dotenv/config";
 import cors from "cors";
 import multer from "multer";
@@ -38,12 +37,10 @@ app.use(cookieParser());
 
 // CORS configuration
 const allowedOrigins = [
-  "https://admin.bizchrome.ai",
-  "https://bizchrome.ai",
-  "https://bizchrome.com",
-  "http://localhost:3000",
-  "https://dev.bizchrome.ai",
-  "https://bizchrome-admin-nu.vercel.app",
+  "https://digisky.ai",
+  "https://www.digisky.ai",
+  "http://localhost:4173",
+  "http://localhost:5173"
 ];
 
 app.use(
@@ -72,7 +69,7 @@ app.use("/auth", userAuth);
 app.use("/validate-token", verifyToken, async (req, res) => {
   const user = await UserModel.findById(
     req.userId,
-    "_id name email roleType location verification status credits image joinedAt mobileNumber"
+    "_id name email roleType country verification status credits image joinedAt mobileNumber"
   );
   return res.status(200).json({ message: "Token verified successfully", user });
 });
@@ -99,9 +96,11 @@ const server = app.listen(port, () => {
 // Socket.io setup
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: allowedOrigins,
+    credentials: true,
   },
 });
+
 
 // Map to store socket IDs of connected users
 const connectedUsers = new Map();
@@ -124,5 +123,4 @@ io.on("connection", (socket) => {
       console.log("User Disconnected");
   });
 });
-
 
