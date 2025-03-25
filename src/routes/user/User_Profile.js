@@ -3,7 +3,6 @@ import UserProfile from "../../controllers/user/User_Profile.js";
 
 const router = express.Router();
 
-router.get("/filters", UserProfile.getUserByFilters);
 router.get("/", UserProfile.getAllProfiles);
 router.get("/:id", UserProfile.getProfileById);
 router.post("/", UserProfile.addProfile);

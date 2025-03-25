@@ -21,6 +21,12 @@ class ConversationController {
                 return res.status(404).json({ message: "One or both users not found" });
             }
     
+            if (initiator.roleType === "freelancer" && recipient.roleType === "freelancer") {
+                console.log("[ERROR] Freelancer cannot chat with another freelancer.");
+                return res.status(403).json({ message: "Freelancers cannot chat with other freelancers" });
+            }
+    
+            // Check if chat already exists
             const existingChat = await Chat.findOne({
                 $or: [
                     { user1: req.userId, user2: userId },
@@ -38,6 +44,21 @@ class ConversationController {
                 return res.status(200).json(existingChat);
             }
     
+            // **Deduct 1 credit if Client starts chat with a Freelancer**
+            if (initiator.roleType === "client" && recipient.roleType === "freelancer") {
+                if (recipient.credits <= 0) {
+                    console.log(`[ERROR] Freelancer ${userId} has insufficient credits.`);
+                    return res.status(400).json({ message: "Freelancer has insufficient credits." });
+                }
+                console.log(`[INFO] Deducting 1 credit from Freelancer: ${userId}`);
+                await UserModel.findByIdAndUpdate(
+                    userId,
+                    { $inc: { credits: -1 } },
+                    { new: true }
+                );
+            }
+    
+            // Create new chat
             const newChat = new Chat({ user1: req.userId, user2: userId });
             await newChat.save();
             console.log(`[SUCCESS] New chat created between ${req.userId} and ${userId}`);
@@ -58,28 +79,34 @@ class ConversationController {
                 return res.status(400).json({ message: "Content and chatId are required." });
             }
     
+            // Fetch sender details
             const sender = await UserModel.findById(req.userId);
             if (!sender) {
                 return res.status(404).json({ message: "Sender not found." });
             }
     
+            // Fetch chat details
             const chat = await Chat.findById(chatId).populate("user1 user2");
             if (!chat) {
                 return res.status(404).json({ message: "Chat not found." });
             }
     
+            // Determine receiver
             const receiver = chat.user1._id.equals(req.userId) ? chat.user2 : chat.user1;
     
+            // Create message
             const newMessage = await Message.create({
                 sender_id: req.userId,
                 content,
                 chat_id: chatId,
             });
     
+            // Populate the message with sender and chat info
             const populatedMessage = await Message.findById(newMessage._id)
                 .populate("sender_id", "name email")
                 .populate("chat_id");
     
+            // Update latest message in chat
             await Chat.findByIdAndUpdate(chatId, {
                 latestMessage: populatedMessage._id,
                 notify: {
@@ -88,6 +115,7 @@ class ConversationController {
                 },
             });
     
+            // ✅ Emit message to socket
             io.to(chatId).emit("newMessage", populatedMessage);
     
             return res.status(201).json({ message: "Message sent successfully", data: populatedMessage });
@@ -121,6 +149,9 @@ class ConversationController {
         }
     };
 
+   
+    
+    
     static fetchAllMessages = async (req, res) => {
         try {
             const { chatId } = req.params;
