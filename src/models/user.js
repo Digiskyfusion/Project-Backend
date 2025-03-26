@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   roleType: { type: String, enum: ["freelancer", "client"], default: "client" },
   location: { type: String, default: "Rajasthan" },
   image: { type: String },
-  mobileNumber: { type: Number },
+  mobileNumber: { type: String, required: true }, // Changed from Number to String
   bio: { type: String },
   language: { type: String },
   college: { type: String },
@@ -18,10 +18,10 @@ const userSchema = new mongoose.Schema({
   manual_register: { type: Boolean, default: false },
   password: { type: String },
   required_skills: {
-        type: [mongoose.Types.ObjectId],
-        ref: "Category",
-        default: [],
-      },
+    type: [mongoose.Types.ObjectId],
+    ref: "Category",
+    default: [],
+  },
   verification: {
     code: Number,
     expiresAt: Date,
@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
       paymentDetails: { paymentId: String, orderId: String, signature: Object },
     },
   ],
-  credits: { type: Number, default: 0},
+  credits: { type: Number, default: 0 },
   status: { type: String, enum: ['Online', 'Offline'], default: 'Offline' },
   joinedAt: { type: Date, default: Date.now },
   isAdmin: { type: Boolean, default: false },
@@ -42,4 +42,3 @@ const userSchema = new mongoose.Schema({
 
 const UserModel = mongoose.model("User", userSchema);
 export default UserModel;
-
