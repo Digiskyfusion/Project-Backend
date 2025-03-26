@@ -24,7 +24,6 @@ import subcategoryRoutes from "./routes/admin/subcategory.js";
 import usersRoutes from "./routes/user/user.js";
 import profileRoutes from "./routes/user/User_Profile.js";
 import blogRoutes from "./routes/admin/blog.js";
-
 // Multer config
 const upload = multer({});
 const app = express();
@@ -40,7 +39,8 @@ const allowedOrigins = [
   "https://digisky.ai",
   "https://www.digisky.ai",
   "http://localhost:4173",
-  "http://localhost:5173"
+  "http://localhost:5173",
+  "http://localhost:3000"
 ];
 
 app.use(
