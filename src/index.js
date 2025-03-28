@@ -35,7 +35,7 @@ app.use(cookieParser());
 
 // CORS configuration
 const allowedOrigins = [
-  "https://digisky.ai",
+  "https://digisky.ai/",
   "https://www.digisky.ai",
   "http://localhost:4173",
   "http://localhost:5173",
