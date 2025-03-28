@@ -14,16 +14,15 @@ import verifyToken from "./middlewares/authentication.js";
 import userInfo from "./routes/authenticated/user.js";
 import adminuser from "./routes/admin/user.js";
 import conversation from "./routes/authenticated/conversation.js";
-import { Server } from "socket.io";
 import path from "path";
 import UserModel from "./models/user.js";
-import Chat from "./models/chat.js";
 import verifyAdmin from "./middlewares/admin_authentication.js";
 import categoryRoutes from "./routes/admin/category.js";
 import subcategoryRoutes from "./routes/admin/subcategory.js";
 import usersRoutes from "./routes/user/user.js";
 import profileRoutes from "./routes/user/User_Profile.js";
 import blogRoutes from "./routes/admin/blog.js";
+
 // Multer config
 const upload = multer({});
 const app = express();
@@ -80,47 +79,15 @@ app.use("/user/package", packageRoutes);
 app.use("/user/chat", verifyToken, conversation);
 app.use("/admin", verifyAdmin, adminuser);
 app.use("/category", categoryRoutes);
-app.use("/subcategory", subcategoryRoutes); // Corrected to lowercase for consistency
-app.use("/users", usersRoutes); // Updated to plural for clarity
+app.use("/subcategory", subcategoryRoutes);
+app.use("/users", usersRoutes);
 app.use("/user/profile", profileRoutes);
-app.use("/blog", blogRoutes); 
+app.use("/blog", blogRoutes);
 
 // Error handler
 app.use(errorHandler);
 
 const port = process.env.PORT || 5000;
-const server = app.listen(port, () => {
+app.listen(port, () => {
   console.log(`Express is listening at http://localhost:${port}`);
 });
-
-// Socket.io setup
-const io = new Server(server, {
-  cors: {
-    origin: allowedOrigins,
-    credentials: true,
-  },
-});
-
-
-// Map to store socket IDs of connected users
-const connectedUsers = new Map();
-const userStatus = new Map();
-
-io.of("/").on("connection", (socket) => {
-  socket.on("disconnect", () => {
-  });
-});
-
-io.on("connection", (socket) => {
-  console.log(`User Connected: ${socket.id}`);
-
-  socket.on("joinChat", (chatId) => {
-      socket.join(chatId);
-      console.log(`User joined chat: ${chatId}`);
-  });
-
-  socket.on("disconnect", () => {
-      console.log("User Disconnected");
-  });
-});
-
