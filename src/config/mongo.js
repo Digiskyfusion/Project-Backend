@@ -6,7 +6,8 @@ dotenv.config(); // Ensure this is present to load environment variables
 const connectDb = async () => {
   try {
     const mongoUrl = process.env.MongoDb_URL; // Get the MongoDB URL
-
+   console.log("mongoUrl");
+   console.log(mongoUrl);
     // Check if mongoUrl is defined
     if (!mongoUrl) {
       throw new Error("MongoDb_URL is not defined in the environment variables.");
