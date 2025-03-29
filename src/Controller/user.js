@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../Models/user.js"; // Ensure this path is correct
+const User = require("../Models/user.js");
 
 // Register User
 export const registerUser = async (req, res) => {
