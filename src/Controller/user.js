@@ -102,7 +102,6 @@ export const getUsersBySkills = async (req, res) => {
     }
 };
 
-
 // Update user
 export const updateUser = async (req, res) => {
   try {
