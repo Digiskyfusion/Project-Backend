@@ -7,7 +7,7 @@ import {
   updateUser, 
   deleteUser, 
   getUsersBySkills 
-} from "../Controller/user.js"; // Ensure this path is correct
+} from "../controller/user.js"; // Ensure this path is correct
 
 const router = express.Router();
 
