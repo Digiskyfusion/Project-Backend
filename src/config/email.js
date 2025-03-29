@@ -1,12 +1,13 @@
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
+import "dotenv/config";
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com", // Replace with your SMTP host
-  port: 465, // Use 465 for secure connection, or 587 for STARTTLS
-  secure: true, // Use true for port 465, false for other ports
+  host: process.env.SMTP_HOST || "smtp.gmail.com",
+  port: process.env.SMTP_PORT || 465,
+  secure: process.env.SMTP_SECURE === "true", // Use true for port 465, false for others
   auth: {
-    user: "digiskyfusion@gmail.com", // Your email
-    pass: "mfxs aufn bsoa ttjc", 
+    user: process.env.SMTP_USER, // Your email from environment variables
+    pass: process.env.SMTP_PASS, // Your app password from environment variables
   },
 });
 
