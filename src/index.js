@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import multer from "multer";
 import connectDb from "./config/mongo.js";
-import userRoutes from "./routes_temp/user.js";  // ✅ Ensure this matches the actual file path
+import userRoutes from "./routes/user.js";  // ✅ Ensure this matches the actual file path
 
 const app = express();
 const upload = multer({});
