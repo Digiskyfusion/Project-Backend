@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 import multer from "multer";
 import connectDb from "./config/mongo.js";
 import userRoutes from "./routes/user.js";  // ✅ Ensure this matches the actual file path
-
+import Review from "./routes/review.js"
 const app = express();
 const upload = multer({});
 
@@ -46,6 +46,7 @@ app.get("/", (req, res) => res.send("Server is working"));
 
 // Routes
 app.use("/user", userRoutes);
+app.use("/review", Review);
 
 // Error handler
 app.use((err, req, res, next) => {
