@@ -10,7 +10,7 @@ const connectDb = async () => {
     if (!mongoUrl) {
       throw new Error("MongoDb_URL is not defined in the environment variables.");
     }
-    await mongoose.connect(mongoUrl); // No need for deprecated options
+    await mongoose.connect(process.env.MongoDb_URL); // No need for deprecated options
 
     console.log("✅ Connected to the database");
   } catch (error) {
