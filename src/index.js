@@ -7,6 +7,8 @@ import multer from "multer";
 import connectDb from "./config/mongo.js";
 import userRoutes from "./routes/user.js";  // ✅ Ensure this matches the actual file path
 import Review from "./routes/review.js"
+import Client from "./routes/client.js"
+import Freelancer from "./routes/freelancer.js"
 const app = express();
 const upload = multer({});
 
@@ -46,6 +48,8 @@ app.get("/", (req, res) => res.send("Server is working"));
 
 // Routes
 app.use("/user", userRoutes);
+app.use("/client",Client)
+app.use("/freelancer",Freelancer)
 app.use("/review", Review);
 
 // Error handler
