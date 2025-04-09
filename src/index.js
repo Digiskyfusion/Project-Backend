@@ -9,6 +9,7 @@ import userRoutes from "./routes/user.js";  // ✅ Ensure this matches the actua
 import Review from "./routes/review.js"
 import Client from "./routes/client.js"
 import Freelancer from "./routes/freelancer.js"
+import Forget from "./routes/Forget.js"
 const app = express();
 const upload = multer({});
 
@@ -51,6 +52,7 @@ app.use("/user", userRoutes);
 app.use("/client",Client)
 app.use("/freelancer",Freelancer)
 app.use("/review", Review);
+app.use("/api", Forget);
 
 // Error handler
 app.use((err, req, res, next) => {

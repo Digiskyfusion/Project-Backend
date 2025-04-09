@@ -113,7 +113,7 @@ export const updateUser = async (req, res) => {
   try {
     const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
     // console.log(req.body.image);
-    
+     
     if (!updatedUser) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json({ message: "User updated successfully", user: updatedUser });
@@ -121,6 +121,44 @@ export const updateUser = async (req, res) => {
     res.status(500).json({ message: "Error updating user", error: error.message });
   }
 };
+
+
+// Update user
+// export const updateUser = async (req, res) => {
+//   try {
+//     const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+//     try {
+//       // Send email
+//       await transporter.sendMail({
+//         to: email,
+//         subject: "Welcome to Digisky Fusion",
+//         text: "hello",
+//         html: `<p>Hi ${user.name},</p>
+//         <p>We are excited to have you on board. As a token of appreciation, we have credited 15 free credits to your account.</p>
+//         <p>You can use these credits to explore our services and features.</p>
+//         <p>If you have any questions or need assistance, feel free to contact our support team.</p>
+//         <p>Enjoy your journey with us!</p>
+//         <p>Best Regards,</p>
+//         <p>The Digisky Fusion Team</p>`,
+//       });
+    
+//       return res.status(200).json({
+//         success: true,
+//         message: "Please check your email inbox for your free credits and welcome message.",
+//       });
+//     } catch (error) {
+//       return res.status(500).json({ message: "Failed to send mail", error });
+//     }
+
+//     if (!updatedUser) return res.status(404).json({ message: "User not found" });
+
+//     res.status(200).json({ message: "User updated successfully", user: updatedUser });
+//   } catch (error) {
+//     res.status(500).json({ message: "Error updating user", error: error.message });
+//   }
+// };
+
+
 
 // Delete User
 export const deleteUser = async (req, res) => {
