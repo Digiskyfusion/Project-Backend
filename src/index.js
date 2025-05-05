@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // CORS configuration
-const allowedOrigins = [
+const allowedOrigins = [  
   "https://digisky.ai",
   "https://www.digisky.ai",
   "http://localhost:4173",
