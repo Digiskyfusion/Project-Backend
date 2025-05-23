@@ -13,10 +13,13 @@ import Freelancer from "./routes/freelancer.js"
 import Forget from "./routes/Forget.js"
 import paymentRoutes from "./routes/paymentRoutes.js";
 import chat from "./routes/chat.js";
+import firebaseRoute from "./routes/firebaseRoute.js";
 import { Server } from 'socket.io';
 const app = express();
 const upload = multer({});
 const server = createServer(app);
+
+app.use(bodyParser.json())
 
 
 const io = new Server(server, {
@@ -102,6 +105,7 @@ app.use("/review", Review);
 app.use("/api", Forget);
 app.use("/api/payment", paymentRoutes);
 app.use('/chat', chat);
+app.use('/firebase', firebaseRoute);
 
 // Error handler
 app.use((err, req, res, next) => {

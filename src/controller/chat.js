@@ -56,7 +56,8 @@ export const sendMessage = async (req, res) => {
     const message = {
       sender: senderId,
       text,
-      timestamp: new Date()
+      timestamp: new Date(),
+      read: false;
     };
 
     const updatedConversation = await Chat.findByIdAndUpdate(
@@ -112,15 +113,27 @@ export const markMessagesAsRead = async (req, res) => {
   try {
     const { conversationId, userId } = req.body;
 
-    await Chat.updateOne(
-      {
-        _id: conversationId,
-        "messages.sender": { $ne: userId }
-      },
-      {
-        $set: { "messages.$[].read": true }
+    const conversation = await Chat.findById(conversationId);
+
+    if (!conversation) {
+      return res.status(404).json({
+        success: false,
+        message: "Conversation not found"
+      });
+    }
+
+    // Only update messages not sent by the user
+    let updated = false;
+    conversation.messages.forEach(msg => {
+      if (msg.sender.toString() !== userId && !msg.read) {
+        msg.read = true;
+        updated = true;
       }
-    );
+    });
+
+    if (updated) {
+      await conversation.save();
+    }
 
     res.status(200).json({
       success: true,
