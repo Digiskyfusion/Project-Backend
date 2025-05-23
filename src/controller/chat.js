@@ -57,7 +57,7 @@ export const sendMessage = async (req, res) => {
       sender: senderId,
       text,
       timestamp: new Date(),
-      read: false;
+      read: false
     };
 
     const updatedConversation = await Chat.findByIdAndUpdate(
