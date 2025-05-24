@@ -1,5 +1,5 @@
 // Change from CommonJS to ES modules
-import NotificationService from "../service/notificationService.js";
+// import NotificationService from "../service/notificationService.js";
 
 export const sendFireBaseNotification = async (req, res) => {
   try {
