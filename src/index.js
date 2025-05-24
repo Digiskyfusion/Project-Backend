@@ -15,9 +15,14 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import chat from "./routes/chat.js";
 import firebaseRoute from "./routes/firebaseRoute.js";
 import { Server } from 'socket.io';
+import path from "path";
+import { fileURLToPath } from "url";
+
 const app = express();
 const upload = multer({});
 const server = createServer(app);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(bodyParser.json())
 
@@ -113,6 +118,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal Server Error" });
 });
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Start server
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`Server running on http://localhost:${port}`));
