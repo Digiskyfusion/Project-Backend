@@ -67,10 +67,12 @@ io.on('connection', (socket) => {
 });
 
 // Middleware setup
-app.use(upload.any());
+// app.use(upload.any());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+
 
 // CORS configuration
 const allowedOrigins = [  
@@ -118,7 +120,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal Server Error" });
 });
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Start server
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`Server running on http://localhost:${port}`));
