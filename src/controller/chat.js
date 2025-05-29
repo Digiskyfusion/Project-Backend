@@ -1,5 +1,6 @@
 import Chat from "../model/chat.js";
 import User from "../model/user.js";
+import uploadToFirebase from "../util/firebaseUpload.js";
 
 export const getOrCreateConversation = async (req, res) => {
   try {
@@ -145,5 +146,72 @@ export const markMessagesAsRead = async (req, res) => {
       success: false,
       message: "Error marking messages as read"
     });
+  }
+};
+
+
+// export const uploadFileMessage = async (req, res) => {
+//   try {
+//     const { conversationId, senderId } = req.body;
+//     const file = req.file;
+
+//      if (!file || !conversationId || !senderId) {
+//     return res.status(400).json({ message: "Missing required fields" });
+//   }
+
+//     const fileUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/uploads/${file.filename}`;
+
+//     const message = {
+//       sender: senderId,
+//       fileUrl,
+//       fileType: file.mimetype,
+//       timestamp: new Date(),   
+//       originalname: file.originalname,                     
+//       read: false
+//     };
+
+//     const updatedConversation = await Chat.findByIdAndUpdate(
+//       conversationId,
+//       { $push: { messages: message } },
+//       { new: true }
+//     ).populate("messages.sender", "name image");
+
+//     res.status(200).json({ success: true, data: message });
+//   } catch (err) {
+//     console.error("Error in uploadFileMessage:", err);
+//     res.status(500).json({ success: false, message: "Error uploading file" });
+//   }
+// };
+
+export const uploadFileMessage = async (req, res) => {
+  try {
+    const { conversationId, senderId } = req.body;
+    const file = req.file;
+
+    if (!file || !conversationId || !senderId) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const fileUrl = await uploadToFirebase(file);
+
+    const message = {
+      sender: senderId,
+      fileUrl,
+      fileType: file.mimetype,
+      timestamp: new Date(),
+      originalname: file.originalname,
+      read: false,
+    };
+
+    const updatedConversation = await Chat.findByIdAndUpdate(
+      conversationId,
+      { $push: { messages: message } },
+      { new: true }
+    ).populate("messages.sender", "name image");
+
+    res.status(200).json({ success: true, data: message });
+  } catch (err) {
+    console.error("Error in uploadFileMessage:", err);
+    res.status(500).json({ success: false, message: "Error uploading file" });
   }
 };
