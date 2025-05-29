@@ -3,12 +3,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 const uploadToFirebase = (file) => {
   return new Promise((resolve, reject) => {
+    const token = uuidv4();  // ✅ Generate a unique token
     const blob = bucket.file(`${Date.now()}-${file.originalname}`);
     const blobStream = blob.createWriteStream({
       metadata: {
         contentType: file.mimetype,
         metadata: {
-          firebaseStorageDownloadTokens: uuidv4(),
+          firebaseStorageDownloadTokens: token,  // ✅ Attach token to metadata
         },
       },
     });
@@ -16,7 +17,8 @@ const uploadToFirebase = (file) => {
     blobStream.on('error', (err) => reject(err));
 
     blobStream.on('finish', () => {
-      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/digisky-25d9e.firebasestorage.app/o/${encodeURIComponent(blob.name)}?alt=media`;
+      // ✅ Correct URL with the token query param
+      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(blob.name)}?alt=media&token=${token}`;
       resolve(publicUrl);
     });
 

@@ -1,3 +1,5 @@
 node_modules
 ./node_modules
+
+fireBaseConnectKey.json
 .src/config/fireBaseConnectKey.json
