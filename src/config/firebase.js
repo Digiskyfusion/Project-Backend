@@ -1,7 +1,15 @@
 import admin from 'firebase-admin';
 import { readFileSync } from 'fs';
 import path from 'path';
-const serviceAccount = JSON.parse(process.env.FireBase_Key);
+const base64Key = process.env.FIREBASE_KEY_BASE64;
+
+if (!base64Key) {
+  throw new Error('FIREBASE_KEY_BASE64 is not set in environment variables.');
+}
+
+const serviceAccount = JSON.parse(
+  Buffer.from(base64Key, 'base64').toString('utf-8')
+);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
