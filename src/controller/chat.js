@@ -1,6 +1,7 @@
 import Chat from "../model/chat.js";
 import User from "../model/user.js";
 import uploadToFirebase from "../util/firebaseUpload.js";
+import { io } from "../index.js"
 
 export const getOrCreateConversation = async (req, res) => {
   try {
@@ -209,6 +210,7 @@ export const uploadFileMessage = async (req, res) => {
       { new: true }
     ).populate("messages.sender", "name image");
 
+    io.to(conversationId).emit('receive_message', message);
     res.status(200).json({ success: true, data: message });
   } catch (err) {
     console.error("Error in uploadFileMessage:", err);
