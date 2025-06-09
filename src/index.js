@@ -14,6 +14,7 @@ import Forget from "./routes/Forget.js"
 import paymentRoutes from "./routes/paymentRoutes.js";
 import chat from "./routes/chat.js";
 import firebaseRoute from "./routes/firebaseRoute.js";
+import jobrouter from "./routes/jobRoute.js"
 import { Server } from 'socket.io';
 const app = express();
 const upload = multer({});
@@ -106,6 +107,7 @@ app.use("/api", Forget);
 app.use("/api/payment", paymentRoutes);
 app.use('/chat', chat);
 app.use('/firebase', firebaseRoute);
+app.use("/api/jobs", jobrouter);
 
 // Error handler
 app.use((err, req, res, next) => {
