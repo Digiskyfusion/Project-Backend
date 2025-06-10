@@ -84,21 +84,46 @@ export const deleteJob = async (req, res) => {
   }
 };
 
+// export const updateJob = async (req, res) => {
+//   try {
+//     const { title, skills, budget, experience, currency, description } = req.body;
+//     const updatedJob = await Job.findByIdAndUpdate(
+//       req.params.postedBy,
+//       { title, skills, budget, currency, description ,experience },
+//       { new: true, runValidators: true }
+//     );
+//     if (!updatedJob) return res.status(404).json({ message: "Job not found" });
+
+//     res.json({ message: "Job updated successfully", job: updatedJob });
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error", error });
+//   }
+// };
+
+
+
 export const updateJob = async (req, res) => {
   try {
-    const { title, skills, scope, budget, currency, description } = req.body;
-    const updatedJob = await Job.findByIdAndUpdate(
-      req.params.id,
-      { title, skills, scope, budget, currency, description },
+    const { title, skills, budget, experience, currency, description } = req.body;
+    const { userId } = req.params;
+
+    const updatedJob = await Job.findOneAndUpdate(
+      { postedBy: userId }, // ✅ filter by postedBy
+      { title, skills, budget, experience, currency, description },
       { new: true, runValidators: true }
     );
-    if (!updatedJob) return res.status(404).json({ message: "Job not found" });
+
+    if (!updatedJob) {
+      return res.status(404).json({ message: "Job not found for this user" });
+    }
 
     res.json({ message: "Job updated successfully", job: updatedJob });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
 };
+
+
 
 
 export const getJobById = async (req, res) => {
