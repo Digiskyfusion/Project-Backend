@@ -6,7 +6,7 @@ const jobSchema = new mongoose.Schema(
     skills: { type: String, required: true },
     // scope: { type: String, required: true },
     budget: { type: Number, required: true },
-    experience: { type: String, required: true },
+    experience: { type: Number, required: true },
    currency: { 
   type: String, 
   required: true,
