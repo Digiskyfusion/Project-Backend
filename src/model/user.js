@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema({
   language: { type: String },
   password: { type: String },
   skills: [],
+  showcaseLinks: [{ type: String }],
   credits: { type: Number, default: 0 },
   joineddate: { type: Date, default: Date.now },
   isAdmin: { type: Boolean, default: false },
