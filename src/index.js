@@ -17,6 +17,7 @@ import firebaseRoute from "./routes/firebaseRoute.js";
 import { Server } from 'socket.io';
 import path from "path";
 import { fileURLToPath } from "url";
+import User from "./model/user.js";
 
 const app = express();
 const upload = multer({});
@@ -98,11 +99,29 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  const host = req.hostname;
+  const hostParts = host.split('.');
+
+  if (hostParts.length > 2) {
+    const subdomain = hostParts[0];
+
+    if (subdomain !== 'www' && subdomain !== 'digisky') {
+      req.subdomainUser = subdomain;
+    }
+  }
+
+  next();
+});
+
+
+
 // Database connection
 connectDb();
 
 // Server health check
 app.get("/", (req, res) => res.send("Server is working"));
+
 
 // Routes
 app.use("/user", userRoutes);
@@ -122,6 +141,7 @@ app.use((err, req, res, next) => {
 
 // app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Start server
+
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`Server running on http://localhost:${port}`));
 export { io }
