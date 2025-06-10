@@ -16,9 +16,14 @@ import chat from "./routes/chat.js";
 import firebaseRoute from "./routes/firebaseRoute.js";
 import jobrouter from "./routes/jobRoute.js"
 import { Server } from 'socket.io';
+import path from "path";
+import { fileURLToPath } from "url";
+
 const app = express();
 const upload = multer({});
 const server = createServer(app);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(bodyParser.json())
 
@@ -63,10 +68,12 @@ io.on('connection', (socket) => {
 });
 
 // Middleware setup
-app.use(upload.any());
+// app.use(upload.any());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+
 
 // CORS configuration
 const allowedOrigins = [  
@@ -115,6 +122,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal Server Error" });
 });
 
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Start server
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`Server running on http://localhost:${port}`));
+export { io }

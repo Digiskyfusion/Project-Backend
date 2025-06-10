@@ -127,7 +127,7 @@ export const loginUser = async (req, res) => {
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
             const token = jwt.sign(
-              { id: user._id, email: user.email, roleType: user.roleType }, 
+              { id: user._id,name:user.name, email: user.email, roleType: user.roleType }, 
               process.env.JWT_SECRET_KEY || "your_jwt_secret", 
               { expiresIn: "1h" }
             );
@@ -259,4 +259,29 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
   
+};
+
+
+// Update user credits
+export const updateUserCredits = async (req, res) => {
+  try {
+    const { credits } = req.body;
+    if (typeof credits !== 'number') {
+      return res.status(400).json({ message: "Credits must be a number" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      { credits },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "Credits updated successfully", user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating credits", error: error.message });
+  }
 };
