@@ -12,7 +12,10 @@ const userSchema = new mongoose.Schema({
   bio: { type: String },
   experience: { type: String },
     pastExperience: { type: String }, // ✅ New field
-  work: [{ type: String }],         // ✅ New field (array of work items)
+  work: {
+  type: [String],
+  default: [],
+},// ✅ New field (array of work items)
   language: { type: String },
   password: { type: String },
   skills: [],
