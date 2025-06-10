@@ -79,7 +79,7 @@ export const registerUser = async (req, res) => {
       </div>
 
       <h2 style="text-align: center; color: #2e2e2e; font-size: 24px; margin-bottom: 12px;">
-        🎉 Welcome to <span style="color: #007BFF;">JobConnect</span>!
+        🎉 Welcome to <span style="color: #007BFF;">DIGISKY.ai</span>!
       </h2>
 
       <p style="font-size: 16px; color: #444; text-align: center; line-height: 1.6; margin-bottom: 25px;">
