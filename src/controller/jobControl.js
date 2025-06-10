@@ -67,7 +67,7 @@ export const postJob = async (req, res) => {
 
 export const getAllJobs = async (req, res) => {
   try {
-    const jobs = await Job.find().sort({ createdAt: -1 });
+    const jobs = (await Job.find()).reverse();
     res.json(jobs);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
