@@ -105,9 +105,6 @@ export const registerUser = async (req, res) => {
   </div>
 `
 
-
-
-
       });
     }
 
