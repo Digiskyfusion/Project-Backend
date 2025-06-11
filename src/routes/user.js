@@ -29,7 +29,8 @@ router.put("/credits/:id", updateUserCredits);
 
 // ✅ Subdomain portfolio API route
 router.get("/portfolio/:name", async (req, res) => {
-  const { name } = req.params;
+  let { name } = req.params;
+  name = name.replace(/_/g, " "); // Replace underscores with spaces
   try {
     const user = await User.findOne({ name });
     if (!user) return res.status(404).json({ error: "User not found" });
@@ -38,5 +39,6 @@ router.get("/portfolio/:name", async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 export default router;
