@@ -6,7 +6,7 @@ import {getAllJobs,postJob,deleteJob,updateJob,getJobById} from "../controller/j
 router.route("/").get(protect,getAllJobs);
 router.route("/").post(protect,postJob);
 router.route("/:id").delete(protect,deleteJob);
-router.route("/:id").put(protect,updateJob);
+router.route("/:userId").put(protect,updateJob);
 router.get("/:id",protect,getJobById); // 👈 Add this
 // router.route("/api/user/me").put(protect,findById);
 
