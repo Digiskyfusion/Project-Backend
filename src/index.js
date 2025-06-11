@@ -41,7 +41,7 @@ const io = new Server(server, {
       "https://3.109.174.170",
       "https://api.digisky.ai"
     ],
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST","PUT"]
   }
 });
 
