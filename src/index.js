@@ -18,6 +18,7 @@ import jobrouter from "./routes/jobRoute.js"
 import { Server } from 'socket.io';
 import path from "path";
 import { fileURLToPath } from "url";
+import User from "./model/user.js";
 
 const app = express();
 const upload = multer({});
@@ -76,34 +77,97 @@ app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 
 // CORS configuration
-const allowedOrigins = [  
-  "https://digisky.ai",
-  "https://www.digisky.ai",
-  "http://localhost:4173",
-  "http://localhost:5173",
-  "http://localhost:3000",
-  "https://3.109.174.170",
-  "https://api.digisky.ai"
-];
+// const allowedOrigins = 
+
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (!origin) return callback(null, true); // Allow non-browser tools like Postman
+
+//       const allowedBaseDomains = [  
+//   "https://digisky.ai",
+//   "https://www.digisky.ai",
+//   "http://localhost:4173",
+//   "http://localhost:5173",
+//   "http://localhost:3000",
+//   "https://3.109.174.170",
+//   "https://api.digisky.ai"
+// ];
+//       const url = new URL(origin);
+//       const hostname = url.hostname;
+
+//       const isAllowed = allowedBaseDomains.some(base => 
+//         hostname === base || hostname.endsWith(`.${base}`)
+//       );
+
+//       if (isAllowed) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     credentials: true,
+//   })
+// );
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
+      if (!origin) return callback(null, true); // allow Postman & same-origin
+
+      const allowedBaseDomains = [  
+        "digisky.ai",
+        "localhost",
+        "3.109.174.170",
+        "api.digisky.ai",
+        "localhost:5173",
+      ];
+
+      try {
+        const hostname = new URL(origin).hostname;
+
+        const isAllowed = allowedBaseDomains.some(base =>
+          hostname === base || hostname.endsWith(`.${base}`)
+        );
+
+        if (isAllowed) {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
+      } catch (e) {
+        callback(new Error("Invalid origin"));
       }
     },
     credentials: true,
   })
 );
 
+
+
+app.use((req, res, next) => {
+  const host = req.hostname;
+  const hostParts = host.split('.');
+
+  if (hostParts.length > 2) {
+    const subdomain = hostParts[0];
+
+    if (subdomain !== 'www' && subdomain !== 'digisky') {
+      req.subdomainUser = subdomain;
+    }
+  }
+
+  next();
+});
+
+
+
 // Database connection
 connectDb();
 
 // Server health check
 app.get("/", (req, res) => res.send("Server is working"));
+
 
 // Routes
 app.use("/user", userRoutes);
@@ -124,6 +188,7 @@ app.use((err, req, res, next) => {
 
 // app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Start server
+
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`Server running on http://localhost:${port}`));
 export { io }

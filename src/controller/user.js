@@ -79,7 +79,7 @@ export const registerUser = async (req, res) => {
       </div>
 
       <h2 style="text-align: center; color: #2e2e2e; font-size: 24px; margin-bottom: 12px;">
-        🎉 Welcome to <span style="color: #007BFF;">JobConnect</span>!
+        🎉 Welcome to <span style="color: #007BFF;">DIGISKY.ai</span>!
       </h2>
 
       <p style="font-size: 16px; color: #444; text-align: center; line-height: 1.6; margin-bottom: 25px;">
@@ -153,6 +153,20 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({ message: "Error fetching users", error: error.message });
   }
 };
+
+//work only user 
+export const getUsersWithWork = async (req, res) => {
+  try {
+    // Find users where the work array has at least one item
+    const usersWithWork = await User.find({ work: { $exists: true, $not: { $size: 0 } } });
+
+    res.status(200).json(usersWithWork);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching users with work", error: error.message });
+  }
+};
+
+
 
 // Get user by ID
 export const getUserById = async (req, res) => {
