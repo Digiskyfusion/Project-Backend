@@ -7,7 +7,8 @@ import {
   updateUser, 
   deleteUser, 
   getUsersBySkills,
-  updateUserCredits
+  updateUserCredits,
+  getUsersWithWork
 } from "../controller/user.js"; // ✅ Ensure this path is correct
 
 import User from "../model/user.js"// ✅ Needed for portfolio route
@@ -17,12 +18,14 @@ const router = express.Router();
 // User Routes
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.get("/users-with-work", getUsersWithWork);
 router.get("/all", getAllUsers);
 router.get("/skills", getUsersBySkills);
 router.get("/:id", getUserById);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
 router.put("/credits/:id", updateUserCredits);
+
 
 // ✅ Subdomain portfolio API route
 router.get("/portfolio/:name", async (req, res) => {
