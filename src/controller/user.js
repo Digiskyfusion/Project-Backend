@@ -154,6 +154,20 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
+//work only user 
+export const getUsersWithWork = async (req, res) => {
+  try {
+    // Find users where the work array has at least one item
+    const usersWithWork = await User.find({ work: { $exists: true, $not: { $size: 0 } } });
+
+    res.status(200).json(usersWithWork);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching users with work", error: error.message });
+  }
+};
+
+
+
 // Get user by ID
 export const getUserById = async (req, res) => {
   try {
