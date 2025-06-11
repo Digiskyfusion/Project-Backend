@@ -140,3 +140,27 @@ export const getJobById = async (req, res) => {
 };
 
 
+export const searchJobs = async (req, res) => {
+  try {
+    const keyword = req.params.keyword || '';
+
+    const jobs = await Job.find({
+      $or: [
+        { title: { $regex: keyword, $options: 'i' } },
+        { skills: { $regex: keyword, $options: 'i' } }
+      ]
+    });
+
+   if(jobs.length<1){
+       return res.status(400).json({message:"No profile found."})
+      }
+  return  res.status(200).json(jobs);
+  } catch (error) {
+   return res.status(500).json({ error: 'Server error' });
+  }
+};
+
+
+
+
+
