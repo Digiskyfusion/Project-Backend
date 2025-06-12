@@ -31,14 +31,20 @@ router.put("/credits/:id", updateUserCredits);
 router.get("/portfolio/:name", async (req, res) => {
   let { name } = req.params;
   name = name.replace(/_/g, " "); // Replace underscores with spaces
+
   try {
-    const user = await User.findOne({ name });
+    const user = await User.findOne({
+      name: { $regex: `^${name}$`, $options: "i" } // Case-insensitive exact match
+    });
+
     if (!user) return res.status(404).json({ error: "User not found" });
+
     return res.json(user);
   } catch (err) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 
 export default router;
