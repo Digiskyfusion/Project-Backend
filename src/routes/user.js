@@ -8,7 +8,8 @@ import {
   deleteUser, 
   getUsersBySkills,
   updateUserCredits,
-  getUsersWithWork
+  getUsersWithWork,
+  removeItme
 } from "../controller/user.js"; // ✅ Ensure this path is correct
 
 import User from "../model/user.js"// ✅ Needed for portfolio route
@@ -25,6 +26,7 @@ router.get("/:id", getUserById);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
 router.put("/credits/:id", updateUserCredits);
+router.put("/api/users/:id/work", removeItme);
 
 
 // ✅ Subdomain portfolio API route
