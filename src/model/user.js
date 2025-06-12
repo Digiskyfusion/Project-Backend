@@ -9,6 +9,10 @@ const userSchema = new mongoose.Schema({
   country: { type: String },          // <-- Added country
   image: { type: String },
   mobileNumber: { type: String },
+  plan: {
+  type: String,
+  default: null,
+},
   bio: { type: String },
   experience: { type: String },
     pastExperience: { type: String }, // ✅ New field

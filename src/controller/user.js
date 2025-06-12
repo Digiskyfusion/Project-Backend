@@ -296,3 +296,27 @@ export const updateUserCredits = async (req, res) => {
     res.status(500).json({ message: "Error updating credits", error: error.message });
   }
 };
+
+
+
+
+export const removeItme= async (req, res) => {
+  const { id } = req.params;
+  const { fileUrl, action } = req.body;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    if (action === "add") {
+      user.work.push(fileUrl);
+    } else if (action === "remove") {
+      user.work = user.work.filter((url) => url !== fileUrl);
+    }
+
+    await user.save();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update work files" });
+  }
+};
