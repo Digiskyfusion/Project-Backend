@@ -8,7 +8,8 @@ import {
   deleteUser, 
   getUsersBySkills,
   updateUserCredits,
-  getUsersWithWork
+  getUsersWithWork,
+  removeItme
 } from "../controller/user.js"; // ✅ Ensure this path is correct
 
 import User from "../model/user.js"// ✅ Needed for portfolio route
@@ -25,11 +26,13 @@ router.get("/:id", getUserById);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
 router.put("/credits/:id", updateUserCredits);
+router.put("/api/users/:id/work", removeItme);
 
 
 // ✅ Subdomain portfolio API route
 router.get("/portfolio/:name", async (req, res) => {
-  const { name } = req.params;
+  let { name } = req.params;
+  name = name.replace(/_/g, " "); // Replace underscores with spaces
   try {
     const user = await User.findOne({ name });
     if (!user) return res.status(404).json({ error: "User not found" });
@@ -38,5 +41,6 @@ router.get("/portfolio/:name", async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 export default router;

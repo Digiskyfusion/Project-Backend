@@ -98,3 +98,63 @@ export const getUserReceipts = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch receipts." });
   }
 };
+
+// paymentcontroller.js
+export const createSubscription = async (req, res) => {
+  try {
+    const { planId } = req.body; // Razorpay Plan ID from dashboard
+
+    const subscription = await razorpay.subscriptions.create({
+      plan_id: planId,
+      customer_notify: 1,
+      total_count: 12, // Optional: 12 months
+    });
+
+    res.status(200).json(subscription);
+  } catch (err) {
+    console.error("Subscription creation failed", err);
+    res.status(500).json({ error: "Failed to create subscription" });
+  }
+};
+
+export const verifySubscription = async (req, res) => {
+  const {
+    razorpay_subscription_id,
+    razorpay_payment_id,
+    razorpay_signature,
+    userId,
+    plan,
+  } = req.body;
+
+  try {
+    // Step 1: Verify signature (if needed)
+    // You can optionally verify the signature (similar to order flow)
+
+    // Step 2: Get user
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Step 3: Save plan to user
+    user.plan = plan;
+    await user.save();
+
+    // Step 4: (Optional) Save to Receipt DB
+    const receipt = new Receipt({
+      userId: user._id,
+      name: user.name,
+      email: user.email,
+      mobileNumber: user.mobileNumber,
+      planName: plan,
+      paymentId: razorpay_payment_id,
+      subscriptionId: razorpay_subscription_id,
+      paymentDate: new Date(),
+    });
+
+    await receipt.save();
+
+    res.status(200).json({ message: "Subscription successful", receipt });
+  } catch (err) {
+    console.error("Subscription verify error:", err);
+    res.status(500).json({ error: "Failed to verify subscription and update user" });
+  }
+};
