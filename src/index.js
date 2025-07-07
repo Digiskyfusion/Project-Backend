@@ -19,7 +19,6 @@ import { Server } from 'socket.io';
 import path from "path";
 import { fileURLToPath } from "url";
 import User from "./model/user.js";
-import { fileURLToPath } from 'url';
 
 const app = express();
 const upload = multer({});
