@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://digisky.ai/sitemap.xml
+Sitemap: https://digiskyai-backend.onrender.com/sitemap.xml
