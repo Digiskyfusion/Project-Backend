@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import multer from "multer";
 import connectDb from "./config/mongo.js";
-import userRoutes from "./routes/user.js";  // ✅ Ensure this matches the actual file path
+import userRoutes from "./routes/user.js";  
 import Review from "./routes/review.js"
 import Client from "./routes/client.js"
 import Freelancer from "./routes/freelancer.js"
@@ -19,6 +19,7 @@ import { Server } from 'socket.io';
 import path from "path";
 import { fileURLToPath } from "url";
 import User from "./model/user.js";
+import { fileURLToPath } from 'url';
 
 const app = express();
 const upload = multer({});
@@ -75,7 +76,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
-
+app.use(express.static(path.join(__dirname, 'public')));
 // CORS configuration
 // const allowedOrigins = 
 
