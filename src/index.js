@@ -79,34 +79,8 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true); // allow Postman & same-origin
-
-      const allowedBaseDomains = [  
-        "digisky.ai",
-        "localhost",
-        "3.109.174.170",
-        "api.digisky.ai",
-        "localhost:5173",
-      ];
-
-      try {
-        const hostname = new URL(origin).hostname;
-
-        const isAllowed = allowedBaseDomains.some(base =>
-          hostname === base || hostname.endsWith(`.${base}`)
-        );
-
-        if (isAllowed) {
-          callback(null, true);
-        } else {
-          callback(new Error("Not allowed by CORS"));
-        }
-      } catch (e) {
-        callback(new Error("Invalid origin"));
-      }
-    },
-    credentials: true,
+    origin: "*", // Allow all origins
+    credentials: false, // Set to true only if you need to support cookies with specific origins
   })
 );
 
@@ -157,5 +131,5 @@ app.use((err, req, res, next) => {
 // Start server
 
 const port = process.env.PORT || 5000;
-server.listen(port, () => console.log(`Server running on http://localhost:${port}`));
+server.listen(port,  "0.0.0.0", () => console.log(`Server running on http://localhost:${port}`));
 export { io }
