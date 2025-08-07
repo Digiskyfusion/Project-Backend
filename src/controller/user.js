@@ -38,7 +38,7 @@ import { sendMailNodemailer } from "../config/email.js";
 
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password, mobileNumber, state, roleType } = req.body;
+    const { name, email, password, mobileNumber, state, roleType, country } = req.body;
 
     // Check if user already exists
     let user = await User.findOne({ email });
@@ -56,6 +56,7 @@ export const registerUser = async (req, res) => {
       mobileNumber,
       state,
       roleType,
+      country
     });
 
     await user.save();

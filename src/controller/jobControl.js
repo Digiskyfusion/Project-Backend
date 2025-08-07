@@ -4,21 +4,16 @@ import { sendMailNodemailer } from "../config/email.js";
 export const postJob = async (req, res) => {
   try {
     // console.log(req.user);
-    
-    // Only clients can post jobs
-    if (req.user.roleType !== "client") {
-      return res.status(403).json({ message: "Only clients can post jobs." });
-    }
 
 
-    const { title, skills, budget, currency, description,experience } = req.body;
+    const { title, skills, budget, currency, description,experience, clientId } = req.body;
     if (!title || !skills || !budget || !experience || !currency || !description) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
     // const file = req.file ? req.file.filename : null;
-
-    const newJob = new Job({
+    if(clientId){
+const newJob = new Job({
       title,
       skills,
     //   scope,
@@ -28,10 +23,27 @@ export const postJob = async (req, res) => {
       experience,
     //   file,
     //   location,
-      postedBy: req.user.id,
+      postedBy: clientId,
     });
-
     await newJob.save();
+    
+    }else{
+      const newJob = new Job({
+      title,
+      skills,
+    //   scope,
+      budget,
+      currency,
+      description,
+      experience,
+    //   file,
+    //   location,
+      postedBy: clientId,
+    });
+    
+    await newJob.save();
+    
+
 
     // Send confirmation email
     if (req.user.email) {
@@ -57,6 +69,7 @@ export const postJob = async (req, res) => {
     `,
   });
 }
+    }
 
     res.status(201).json({ message: "Job posted successfully!" });
   } catch (error) {
