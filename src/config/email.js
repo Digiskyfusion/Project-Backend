@@ -22,13 +22,13 @@ export const sendMailNodemailer = async ({ to, subject, text, html }) => {
     host: "smtp.gmail.com",
     port: 587,
     auth: {
-      user: "manishsharma5382@gmail.com",
-      pass: "pyxacmbgccotngcd", // Consider using environment variables for security
+      user: "digiskyfusion@gmail.com",
+      pass: "Kamleshsharma0310@", // Consider using environment variables for security
     },
   });
 
   const info = await transporter.sendMail({
-    from: '"Manish" <manishsharma5382@gmail.com>',
+    from: '"Digisky Fusion" <digiskyfusion@gmail.com>',
     to,
     subject,
     text,
