@@ -23,7 +23,7 @@ export const sendMailNodemailer = async ({ to, subject, text, html }) => {
     port: 587,
     auth: {
       user: "digiskyfusion@gmail.com",
-      pass: "Kamleshsharma0310@", // Consider using environment variables for security
+      pass: "ndjjctjsartjcdyw", // Consider using environment variables for security
     },
   });
 
