@@ -53,31 +53,12 @@ io.on('connection', (socket) => {
     console.log(`User ${socket.id} joined conversation ${conversationId}`);
   });
 
-    socket.on('send_message', async (data) => {
+  socket.on('send_message', async (data) => {
     try {
-      // 1. Create the message object to be saved
-      const messageToSave = {
-        sender: data.sender,
-        text: data.text,
-        timestamp: new Date(),
-        read: false
-      };
-
-      // 2. Save the message to the database
-      const updatedConversation = await Chat.findByIdAndUpdate(
-        data.conversationId,
-        { $push: { messages: messageToSave } },
-        { new: true }
-      ).populate("messages.sender", "name image");
+      socket.to(data.conversationId).emit('receive_message', data);
       
-      // 3. Get the newly saved message (it's the last one in the array)
-      const newMessage = updatedConversation.messages[updatedConversation.messages.length - 1];
-
-      // 4. Broadcast the saved message (with its DB _id) to the room
-      io.to(data.conversationId).emit('receive_message', newMessage);
-      
+      socket.emit('message_delivered', data);
     } catch (error) {
-      console.error('Error saving/sending message:', error);
       socket.emit('message_error', { error: 'Failed to send message' });
     }
   });
