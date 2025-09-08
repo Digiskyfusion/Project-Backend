@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   country: { type: String },          // <-- Added country
   image: { type: String },
   mobileNumber: { type: String },
+   token: { type: String, default: "" },
   plan: {
   type: String,
   default: null,
