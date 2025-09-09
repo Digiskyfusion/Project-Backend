@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post("/create-order", createOrder);
 router.post("/verify-payment", verifyPayment);
-router.post('/payment/verify-subscription', verifySubscription);
+router.post('/verify-subscription', verifySubscription);
 router.get("/receipts/:userId", getUserReceipts);
 router.post('/create-subscription', createSubscription); // Optional endpoint
 
